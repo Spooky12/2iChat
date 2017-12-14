@@ -1,9 +1,9 @@
 #include "include.h"
 
-int lire_requete(int soc, char *param){
+int lire_requete(){
 	char buffer[BUFF_MAX];
 	//On lit la socket
-	TEST(read(soc, &buffer, BUFF_MAX), "ERREUR READ")
+	CHECK(read(soc, &buffer, BUFF_MAX), "ERREUR READ")
 
 	//On recupere la première occurence de \n
 	char *d = strstr(buffer, "\n");
@@ -21,51 +21,13 @@ int lire_requete(int soc, char *param){
 	strcpy ( param, d + 1 );
 	return req;
 }
-
-void traiter_req100(int soc, unsigned long nb){
-	//On met 100\nNOMBRE_D'ELTS dans message
-	char message[BUFF_MAX];
-	sprintf(message, "100\n%ld",nb);
-	//On envoie la réponse
-	TEST(write(soc, message, strlen(message)+1), "ERREUR WRITE" )
+void traiter_req0(){
 }
 
-void traiter_req0(int soc){
-	//On met 100\nNOMBRE_D'ELTS dans message
-	char message[BUFF_MAX];
-	sprintf(message, "0\n");
-	//On envoie la réponse
-	TEST(write(soc, message, strlen(message)+1), "ERREUR WRITE" )
-}
-
-void traiter_req200(int soc, unsigned long nb, T_Tab tableau,int index){
-	char message[BUFF_MAX];
-	if(index>=nb || index<0){
-		//Index out of bounds, on retourne une requete 250
-		sprintf(message, "250\n");
-	}else{
-		//On retourne une requete 200 avec la chaine correspondant à l'index
-		sprintf(message, "200\n%s",tableau[index]);
-	}
-	TEST(write(soc, message, strlen(message)+1), "ERREUR WRITE" )
+void traiter_req100(){
 }
 
 int main(){
-	//Création du tableau contenant les phrases
-	T_Tab tableau = {"Phrase 1",
-                   "Phrase 2",
-                   "Phrase 3",
-                   "Phrase 4",
-                   "Phranse 5",
-                   "Phrase 6",
-                   "Phrase 7",
-                   "Phrase 8",
-                   "Phrase 10",
-                   "Phrase 9",
-                   "Phrase 11",
-                   "Phrase 12",
-                   "Phrase 13",
-                   "Phrase 14", };
 	//Création des sockets
 	int socServeur, socClient;
 	//Création des adresses
@@ -82,8 +44,8 @@ int main(){
 	memset(addr_serveur.sin_zero,0,8);
 
 	//On bind le socket et on le met en mode écoute
-	TEST(bind(socServeur, (struct sockaddr*)&addr_serveur, sizeof(addr_serveur)), "ERREUR BIND");
-	TEST(listen(socServeur,1),"ERREUR LISTEN")
+	CHECK(bind(socServeur, (struct sockaddr*)&addr_serveur, sizeof(addr_serveur)), "ERREUR BIND");
+	CHECK(listen(socServeur,1),"ERREUR LISTEN")
 
 
 	while(1){
@@ -91,7 +53,7 @@ int main(){
 		tailleClient = sizeof(struct sockaddr);
 
 		//On attend qu'un client se connecte
-		TEST((socClient = accept(socServeur, (struct sockaddr*)&addr_client, (unsigned int*)&tailleClient)), "ERREUR ACCEPT")
+		CHECK((socClient = accept(socServeur, (struct sockaddr*)&addr_client, (unsigned int*)&tailleClient)), "ERREUR ACCEPT")
 		//On affiche le port et l'adresse du client
 		printf("Port : %d\n", ntohs(addr_serveur.sin_port));
 		printf("Adresse du client: %s\n", inet_ntoa(addr_client.sin_addr));
@@ -104,17 +66,14 @@ int main(){
 			char param[BUFF_MAX] = "";
 			//On attend une requete du client
 			int resultat = lire_requete(socClient, param);
-
+			
 			//On gere les différentes requetes possibles
 			switch(resultat){
 				case 100:
-					traiter_req100(socClient, sizeof(tableau)/BUFF_MAX);
-				break;
-				case 200:
-					traiter_req200(socClient, sizeof(tableau)/ BUFF_MAX, tableau, atoi(param));
+					traiter_req100();
 				break;
 				case 0:
-					traiter_req0(socClient);
+					traiter_req0();
 					fin = 1;
 				break;
 				default:
