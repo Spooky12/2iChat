@@ -1,6 +1,6 @@
 #include "include.h"
 
-int lire_requete(){
+int lire_requete(int soc, char * param){
 	char buffer[BUFF_MAX];
 	//On lit la socket
 	CHECK(read(soc, &buffer, BUFF_MAX), "ERREUR READ")
@@ -77,7 +77,7 @@ int main(){
 					fin = 1;
 				break;
 				default:
-					printf("Code inconnu");
+					printf("Code inconnu\n");
 				break;
 			}
 		}
