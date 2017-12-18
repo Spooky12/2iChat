@@ -21,6 +21,7 @@ int lire_requete(int soc, char * param){
 	strcpy ( param, d + 1 );
 	return req;
 }
+
 void traiter_req0(){
 }
 

@@ -1,5 +1,7 @@
 #include "../include.h"
 
+WINDOW *mainWin;
+
 void lire_reponse(int soc){
     char rep[BUFF_MAX];
     int repID;
