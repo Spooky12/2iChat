@@ -1,5 +1,7 @@
 #include "../libs/include.h"
 
+struct Salon *salons = NULL;
+
 int lire_requete(int soc, char * param){
 	char buffer[BUFF_MAX];
 	//On lit la socket
@@ -24,7 +26,7 @@ int lire_requete(int soc, char * param){
 
 void traiter_req0(int soc){
 	char message[BUFF_MAX];
-	sprintf(message, "200\n");
+	sprintf(message, "0\n");
 	envoyer_reponse(soc, message);
 }
 
@@ -37,6 +39,63 @@ void traiter_req100(int soc){
 void envoyer_reponse(int soc, char *req){
 	//On envoie la requete au serveur
     CHECK(write(soc, req, strlen(req)+1), "ERREUR WRITE");
+}
+
+void initServeur(){
+	struct Salon *salon = NULL;
+	//Création du salon d'accueil
+	salon = (struct Salon*)malloc(sizeof(struct Salon));
+	strcpy(salon->nom,"Accueil");
+	strcpy(salon->mdp,"");
+	salon->clients = NULL;
+	HASH_ADD_STR( salons, nom, salon);
+}
+
+void* traiterClient(void* ptr){
+	int socClient = *(int *) ptr;
+	static int i = 0;
+	i++;
+	//Création de notre client
+	struct Client *client = NULL;
+	client = (struct Client*)malloc(sizeof(struct Client));
+	client->socket = socClient;
+	sprintf(client->nom,"%s%d","chaton", i);
+	client->couleur=0;
+	//Ajout du client au salon de base
+	struct Salon *salon;
+	HASH_FIND_STR( salons, "Accueil", salon);
+	if(salon!= NULL){
+		HASH_ADD_STR( salon->clients, nom, client );
+	}
+	printf("Le client %s est arrivé sur le chan\n", client->nom);
+	//Booléen de fin
+	short fin = 0;
+	//On boucle tant que la fin n'est pas demandée
+	while(!fin){
+		//On initialise une chaine param vide
+		char param[BUFF_MAX] = "";
+		//On attend une requete du client
+		int resultat = lire_requete(socClient, param);
+		
+		//On gere les différentes requetes possibles
+		switch(resultat){
+			case 100:
+				printf("Requete 100\n");
+				traiter_req100(socClient);
+			break;
+			case 0:
+				printf("Requete 0\n");
+				traiter_req0(socClient);
+				fin = 1;
+			break;
+			default:
+				printf("Code inconnu\n");
+			break;
+		}
+	}
+	//On ferme la socket client
+	close(socClient);
+	return NULL;
 }
 
 int main(){
@@ -59,7 +118,8 @@ int main(){
 	CHECK(bind(socServeur, (struct sockaddr*)&addr_serveur, sizeof(addr_serveur)), "ERREUR BIND");
 	CHECK(listen(socServeur,1),"ERREUR LISTEN")
 
-
+	initServeur();
+	
 	while(1){
 		//On récupère la taille de l'adresse du client
 		tailleClient = sizeof(struct sockaddr);
@@ -70,33 +130,8 @@ int main(){
 		printf("Port : %d\n", ntohs(addr_serveur.sin_port));
 		printf("Adresse du client: %s\n", inet_ntoa(addr_client.sin_addr));
 
-		//Booléen de fin
-		short fin = 0;
-		//On boucle tant que la fin n'est pas demandée
-		while(!fin){
-			//On initialise une chaine param vide
-			char param[BUFF_MAX] = "";
-			//On attend une requete du client
-			int resultat = lire_requete(socClient, param);
-			
-			//On gere les différentes requetes possibles
-			switch(resultat){
-				case 100:
-					printf("Requete 100\n");
-					traiter_req100(socClient);
-				break;
-				case 0:
-					printf("Requete 0\n");
-					traiter_req0(socClient);
-					fin = 1;
-				break;
-				default:
-					printf("Code inconnu\n");
-				break;
-			}
-		}
-		//On ferme la socket client
-		close(socClient);
+		pthread_t thread_client;
+		pthread_create(&thread_client, NULL, traiterClient, (void *)&socClient);
 	}
 	//On ferme la socket serveur
 	close(socServeur);

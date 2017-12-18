@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <pthread.h>
 #include <ncurses.h>
 
 // Includes perso
@@ -29,7 +30,7 @@ struct Client {
 struct Salon {
 	char nom[64];
 	char mdp[64];
-	struct my_struct *clients;
+	struct Client *clients;
 	UT_hash_handle hh;
 };
 
@@ -49,3 +50,4 @@ int lire_requete(int soc, char * param);
 void envoyer_reponse(int soc, char *req);
 void traiter_req0(int soc);
 void traiter_req100(int soc);
+void* traiterClient(void* ptr);
