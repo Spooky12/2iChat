@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <ncurses.h>
+#include <pthread.h>
 
 // Includes perso
 #include "uthash.h" //Gestion des hashsets
@@ -42,6 +43,8 @@ void afficherMessage(WINDOW *win,char* pseudo, char* texte, int couleur);
 void fermerCurses();
 
 // client.c
+void *gestion_envoie(void *soc);
+void *gestion_lecture(void *soc);
 void lire_reponse(int soc);
 void envoyer_requete(int soc, char *req);
 
