@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <ncurses.h>
 
 // Includes perso
 #include "uthash.h" //Gestion des hashsets

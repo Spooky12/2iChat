@@ -1,4 +1,4 @@
-#include "../include.h"
+#include "../libs/include.h"
 
 WINDOW *mainWin;
 

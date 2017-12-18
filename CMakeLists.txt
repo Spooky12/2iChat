@@ -3,8 +3,8 @@ project(2iChat C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(Serveur2iChat serveur.c include.h)
-add_executable(Client2iChat client.c include.h)
+add_executable(Serveur2iChat serveur/serveur.c libs/include.h)
+add_executable(Client2iChat client/client.c libs/include.h)
 
 
 
