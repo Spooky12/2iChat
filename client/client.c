@@ -77,17 +77,17 @@ int main(){
     pthread_t threads[2];
     void **resThread;
 
-    CHECK(pthread_create(&threads[1], NULL, gestion_envoie, (void *) &socClient ), "ERREUR création thread envoie")
-    CHECK(pthread_create(&threads[2], NULL, gestion_lecture, (void *) &socClient), "ERREUR création thread lecture")
+    CHECK(pthread_create(&threads[0], NULL, gestion_envoie, (void *) &socClient ), "ERREUR création thread envoie")
+    CHECK(pthread_create(&threads[1], NULL, gestion_lecture, (void *) &socClient), "ERREUR création thread lecture")
 
 	/*sprintf(req,"%i\n",100);
 	envoyer_requete(socClient, req);
 	sprintf(req,"%i\n",0);
 	envoyer_requete(socClient, req);*/
 
-    pthread_join(threads[1], resThread);
+    pthread_join(threads[0], resThread);
     printf("Join 1\n");
-    pthread_join(threads[2], resThread);
+    pthread_join(threads[1], resThread);
     printf("Join 2\n");
     //On ferme la socket
     close(socClient);
