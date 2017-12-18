@@ -1,4 +1,4 @@
-#include "include.h"
+#include "../include.h"
 
 void lire_reponse(int soc){
     char rep[BUFF_MAX];
@@ -17,7 +17,7 @@ void lire_reponse(int soc){
 		case 400:
             break;
         default:
-            printf("Requette inconnue\n");
+            printf("Requete inconnue\n");
             break;
     }
 }

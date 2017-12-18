@@ -1,4 +1,4 @@
-#include "include.h"
+#include "../include.h"
 
 int lire_requete(int soc, char * param){
 	char buffer[BUFF_MAX];
