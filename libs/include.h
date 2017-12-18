@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <ncurses.h>
 
 // Includes perso
 #include "uthash.h" //Gestion des hashsets
@@ -45,5 +46,6 @@ void envoyer_requete(int soc, char *req);
 
 // serveur.c
 int lire_requete(int soc, char * param);
-void traiter_req0();
-void traiter_req100();
+void envoyer_reponse(int soc, char *req);
+void traiter_req0(int soc);
+void traiter_req100(int soc);

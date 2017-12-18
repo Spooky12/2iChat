@@ -1,4 +1,4 @@
-#include "../include.h"
+#include "../libs/include.h"
 
 int lire_requete(int soc, char * param){
 	char buffer[BUFF_MAX];
@@ -22,10 +22,21 @@ int lire_requete(int soc, char * param){
 	return req;
 }
 
-void traiter_req0(){
+void traiter_req0(int soc){
+	char message[BUFF_MAX];
+	sprintf(message, "200\n");
+	envoyer_reponse(soc, message);
 }
 
-void traiter_req100(){
+void traiter_req100(int soc){
+	char message[BUFF_MAX];
+	sprintf(message, "200\n");
+	envoyer_reponse(soc, message);
+}
+
+void envoyer_reponse(int soc, char *req){
+	//On envoie la requete au serveur
+    CHECK(write(soc, req, strlen(req)+1), "ERREUR WRITE");
 }
 
 int main(){
@@ -71,10 +82,12 @@ int main(){
 			//On gere les différentes requetes possibles
 			switch(resultat){
 				case 100:
-					traiter_req100();
+					printf("Requete 100\n");
+					traiter_req100(socClient);
 				break;
 				case 0:
-					traiter_req0();
+					printf("Requete 0\n");
+					traiter_req0(socClient);
 					fin = 1;
 				break;
 				default:

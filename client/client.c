@@ -1,4 +1,4 @@
-#include "../include.h"
+#include "../libs/include.h"
 
 WINDOW *mainWin;
 
@@ -13,10 +13,13 @@ void lire_reponse(int soc){
     sscanf(rep,"%i",&repID);
     switch(repID){
         case 200:
+			printf("Réponse 200\n");
             break;
         case 300:
+			printf("Réponse 300\n");
             break;        
 		case 400:
+			printf("Réponse 400\n");
             break;
         default:
             printf("Requete inconnue\n");
@@ -49,6 +52,11 @@ int main(){
     //Connection au serveur
     CHECK(connect(socClient,(struct sockaddr*)&addr_serveur, sizeof(addr_serveur)), "ERREUR CONNECT")
 
+	sprintf(req,"%i\n",100);
+	envoyer_requete(socClient, req);
+	sprintf(req,"%i\n",0);
+	envoyer_requete(socClient, req);
+	
     //On ferme la socket
     close(socClient);
     return 0;
