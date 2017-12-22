@@ -68,10 +68,17 @@ void* traiterClient(void* ptr){
 		HASH_ADD_STR( salon->clients, nom, client );
 	}
 	printf("Le client %s est arrivé sur le chan\n", client->nom);
+	
+	unsigned int num_users;
+	num_users = HASH_COUNT(salon->clients);
+	printf("Il y a %u utilisateurs sur le chan\n", num_users);
+	
 	//Booléen de fin
 	short fin = 0;
+	//Compteur du nombre d'erreurs
+	int nbInconnu = 0;
 	//On boucle tant que la fin n'est pas demandée
-	while(!fin){
+	while(!fin && nbInconnu<10){
 		//On initialise une chaine param vide
 		char param[BUFF_MAX] = "";
 		//On attend une requete du client
@@ -89,10 +96,13 @@ void* traiterClient(void* ptr){
 				fin = 1;
 			break;
 			default:
+			nbInconnu++;
 				printf("Code inconnu\n");
 			break;
 		}
 	}
+	//on retire le client du salon
+	HASH_DEL( salon->clients, client );
 	//On ferme la socket client
 	close(socClient);
 	return NULL;

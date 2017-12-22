@@ -75,7 +75,6 @@ int main(){
     CHECK(connect(socClient,(struct sockaddr*)&addr_serveur, sizeof(addr_serveur)), "ERREUR CONNECT")
 
     pthread_t threads[2];
-    void **resThread;
 
     CHECK(pthread_create(&threads[0], NULL, gestion_envoie, (void *) &socClient ), "ERREUR création thread envoie")
     CHECK(pthread_create(&threads[1], NULL, gestion_lecture, (void *) &socClient), "ERREUR création thread lecture")
@@ -84,10 +83,9 @@ int main(){
 	envoyer_requete(socClient, req);
 	sprintf(req,"%i\n",0);
 	envoyer_requete(socClient, req);*/
-
-    pthread_join(threads[0], resThread);
+    pthread_join(threads[0], NULL);
     printf("Join 1\n");
-    pthread_join(threads[1], resThread);
+    pthread_join(threads[1], NULL);
     printf("Join 2\n");
     //On ferme la socket
     close(socClient);
