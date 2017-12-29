@@ -31,36 +31,49 @@ void* gestion_lecture(void *soc) {
 
 void lire_reponse(int soc){
     char rep[BUFF_MAX];
-    int repID;
+    int repID=-1;
     //On vide le buffer
     strcpy(rep, "");
 
     //On lit la réponse
     CHECK(read(soc, rep, BUFF_MAX), "ERREUR READ")
-    sscanf(rep,"%i",&repID);
+    printf("Requete recu : '%s'\n", rep);
+    char *d = strstr(rep, "\n");
+    if(d==NULL) {
+        printf("Requete vide : exit thread\n");
+        pthread_exit(0);
+    }
+    int pos = d - rep;
+    char repIDc[BUFF_MAX];
+    strncpy(repIDc, rep, pos);
+    repID = atoi(repIDc);
+    char params[BUFF_MAX];
+    strcpy(params, d+1);
     switch(repID){
         case 0 :
             printf("Réponse 0\n");
             pthread_exit(0);
+            break;
         case 200:
-			printf("Réponse 200\n");
+            printf("Réponse 200\n");
             break;
         case 300:
-			printf("Réponse 300\n");
-            break;        
-		case 400:
-			printf("Réponse 400\n");
+            printf("Réponse 300\n");
+            break;
+        case 400:
+            printf("Réponse 400\n");
             break;
         default:
             printf("Requete inconnue\n");
             break;
     }
+
 }
 
 void envoyer_requete(int soc, char *req){
 	//On envoie la requete au serveur
     CHECK(write(soc, req, strlen(req)+1), "ERREUR WRITE");
-	
+
 	//lire_reponse(soc);
 }
 
@@ -91,9 +104,9 @@ int main(){
 	sprintf(req,"%i\n",0);
 	envoyer_requete(socClient, req);*/
     pthread_join(threads[0], NULL);
-    printf("Join 1\n");
+    printf("Join 0\n");
     pthread_join(threads[1], NULL);
-    printf("Join 2\n");
+    printf("Join 1\n");
     //On ferme la socket
     close(socClient);
     printf("Close socket 0\n");
