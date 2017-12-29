@@ -47,7 +47,7 @@ void drawChatWin() {
    // Draw a slick title on it
    mvwaddch(messWinBox, 0, (COLS * 0.5) - 6, ACS_RTEE);
    wattron(messWinBox, COLOR_PAIR(3));
-   mvwaddstr(messWinBox, 0, (COLS * 0.5) - 5, " TBDChat " );
+   mvwaddstr(messWinBox, 0, (COLS * 0.5) - 5, " Chat 2i " );
    wattroff(messWinBox, COLOR_PAIR(3));
    mvwaddch(messWinBox, 0, (COLS * 0.5) + 4, ACS_LTEE );
    wrefresh(messWinBox);
@@ -70,6 +70,37 @@ void afficherLigne(WINDOW *win, char* texte){
 	wrefresh(win);
 	wcursyncup(inputWin);
 	wrefresh(mainWin);
+}
+
+void recupererMessage(char *message) {
+    int c;
+    //char message[BUFF_MAX];
+    while(1)
+    {
+        c = wgetch(mainWin);
+        if(c==10) {
+            strcat(message, "\n");
+            wclear(inputWin);
+            wrefresh(inputWin);
+            return;
+        }
+        if(c==263) { //backspace
+            if(strlen(message)>0) {
+                char temp[BUFF_MAX] = "";
+                strncpy(temp, message, strlen(message) - 1);
+                strcpy(message, temp);
+            }
+        }
+        else if(c>=32 && c<=126) {
+            char ch[5];
+            sprintf(ch, "%c", c);
+            strcat(message, ch);
+        }
+        wclear(inputWin);
+        mvwprintw(inputWin, 1, 1, message);
+        wrefresh(inputWin);
+    }
+	//return NULL;
 }
 
 void fermerCurses(){

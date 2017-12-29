@@ -42,6 +42,7 @@ void drawChatWin();
 void drawInputWin();
 void afficherLigne(WINDOW *win, char* texte);
 void afficherMessage(WINDOW *win,char* pseudo, char* texte, int couleur);
+void recupererMessage(char *message);
 void fermerCurses();
 
 // client.c

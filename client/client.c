@@ -5,8 +5,8 @@ WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;
 void* gestion_envoie(void *soc) {
     int sock = *(int*) soc;
     char req[BUFF_MAX];
-	char message[BUFF_MAX];
-	
+	char message[BUFF_MAX]="";
+
 	//TODO: fonction de lecture non bloquante
 	/*fgets(message, BUFF_MAX, stdin);
 	while(strcmp(message,"exit\n")!=0){
@@ -16,6 +16,15 @@ void* gestion_envoie(void *soc) {
 		envoyer_requete(sock, req);
 		fgets(message, BUFF_MAX, stdin);
 	}*/
+    recupererMessage(message);
+    while(strcmp(message,"exit\n")!=0){
+        sprintf(req,"%i\n%s\n",100,message);
+        sprintf(message, "Envoie du message: %s", req);
+        afficherLigne(messWin, message);
+        envoyer_requete(sock, req);
+        strcpy(message, "");
+        recupererMessage(message);
+    }
 
 	sprintf(req,"%i\n",0);
     afficherLigne(messWin, "Envoie 0\n");
@@ -23,6 +32,7 @@ void* gestion_envoie(void *soc) {
     afficherLigne(messWin, "exit envoie\n");
     pthread_exit(0);
 }
+
 
 void* gestion_lecture(void *soc) {
     int sock = *(int*) soc;
