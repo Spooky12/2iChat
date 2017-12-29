@@ -130,7 +130,6 @@ int main(){
     close(socClient);
     afficherLigne(messWin, "Close socket 0\n");
 	
-	sleep(5);
 	//fermeture de l'interface graphique
 	fermerCurses();
     return 0;

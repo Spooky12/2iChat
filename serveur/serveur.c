@@ -30,10 +30,10 @@ void traiter_req0(int soc){
 	
 }
 
-void traiter_req100(struct Salon *salon, char* texte){
+void traiter_req100(struct Salon *salon, struct Client *client,char* texte){
 	char message[BUFF_MAX];
 	struct Client *c;
-	sprintf(message, "200\n%s",texte);
+	sprintf(message, "200\n%s\n%i\n%s",client->nom, client->couleur, texte);
 	printf("Requete: %s\n", message);
 	for(c=salon->clients; c != NULL; c=c->hh.next) {
 		printf("Client: %s\n", c->nom);
@@ -92,7 +92,7 @@ void* traiterClient(void* ptr){
 		//On gere les différentes requetes possibles
 		switch(resultat){
 			case 100:
-				traiter_req100(salon, param);
+				traiter_req100(salon, client, param);
 			break;
 			case 0:
 				printf("Requete 0\n");
