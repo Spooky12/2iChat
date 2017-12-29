@@ -5,9 +5,16 @@ WINDOW *mainWin;
 void* gestion_envoie(void *soc) {
     int sock = *(int*) soc;
     char req[BUFF_MAX];
-    sprintf(req,"%i\n",100);
-    printf("Envoie 100\n");
-	envoyer_requete(sock, req);
+	char message[BUFF_MAX];
+	
+	fgets(message, BUFF_MAX, stdin);
+	while(strcmp(message,"exit\n")!=0){
+		sprintf(req,"%i\n%s\n",100,message);
+		printf("Envoie du message: %s", req);
+		envoyer_requete(sock, req);
+		fgets(message, BUFF_MAX, stdin);
+	}
+
 	sprintf(req,"%i\n",0);
     printf("Envoie 0\n");
 	envoyer_requete(sock, req);

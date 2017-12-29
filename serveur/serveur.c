@@ -27,13 +27,18 @@ int lire_requete(int soc, char * param){
 void traiter_req0(int soc){
 	char message[BUFF_MAX];
 	sprintf(message, "0\n");
-	envoyer_reponse(soc, message);
+	
 }
 
-void traiter_req100(int soc){
+void traiter_req100(struct Salon *salon, char* texte){
 	char message[BUFF_MAX];
-	sprintf(message, "200\n");
-	envoyer_reponse(soc, message);
+	struct Client *c;
+	sprintf(message, "200\n%s",texte);
+	printf("Requete: %s\n", message);
+	for(c=salon->clients; c != NULL; c=c->hh.next) {
+		printf("Client: %s\n", c->nom);
+		envoyer_reponse(c->socket, message);
+    }
 }
 
 void envoyer_reponse(int soc, char *req){
@@ -87,8 +92,7 @@ void* traiterClient(void* ptr){
 		//On gere les différentes requetes possibles
 		switch(resultat){
 			case 100:
-				printf("Requete 100\n");
-				traiter_req100(socClient);
+				traiter_req100(salon, param);
 			break;
 			case 0:
 				printf("Requete 0\n");
