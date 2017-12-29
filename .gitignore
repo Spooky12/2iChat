@@ -2,3 +2,4 @@
 cmake-build-debug
 serveur/serveur
 client/client
+client/affichage.o

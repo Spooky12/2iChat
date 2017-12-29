@@ -1,24 +1,26 @@
 #include "../libs/include.h"
 
-WINDOW *mainWin;
+WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;
 
 void* gestion_envoie(void *soc) {
     int sock = *(int*) soc;
     char req[BUFF_MAX];
 	char message[BUFF_MAX];
 	
-	fgets(message, BUFF_MAX, stdin);
+	//TODO: fonction de lecture non bloquante
+	/*fgets(message, BUFF_MAX, stdin);
 	while(strcmp(message,"exit\n")!=0){
 		sprintf(req,"%i\n%s\n",100,message);
-		printf("Envoie du message: %s", req);
+		sprintf(message, "Envoie du message: %s", req);
+		afficherLigne(messWin, message);
 		envoyer_requete(sock, req);
 		fgets(message, BUFF_MAX, stdin);
-	}
+	}*/
 
 	sprintf(req,"%i\n",0);
-    printf("Envoie 0\n");
+    afficherLigne(messWin, "Envoie 0\n");
 	envoyer_requete(sock, req);
-    printf("exit envoie\n");
+    afficherLigne(messWin, "exit envoie\n");
     pthread_exit(0);
 }
 
@@ -37,10 +39,14 @@ void lire_reponse(int soc){
 
     //On lit la réponse
     CHECK(read(soc, rep, BUFF_MAX), "ERREUR READ")
-    printf("Requete recu : '%s'\n", rep);
+
+	char temp[BUFF_MAX];
+	sprintf(temp ,"Requete recu : '%s'\n", rep);
+	afficherLigne(messWin, temp);
+	
     char *d = strstr(rep, "\n");
     if(d==NULL) {
-        printf("Requete vide : exit thread\n");
+        afficherLigne(messWin, "Requete vide : exit thread\n");
         pthread_exit(0);
     }
     int pos = d - rep;
@@ -51,20 +57,20 @@ void lire_reponse(int soc){
     strcpy(params, d+1);
     switch(repID){
         case 0 :
-            printf("Réponse 0\n");
+            afficherLigne(messWin, "Réponse 0\n");
             pthread_exit(0);
             break;
         case 200:
-            printf("Réponse 200\n");
+            afficherLigne(messWin, "Réponse 200\n");
             break;
         case 300:
-            printf("Réponse 300\n");
+            afficherLigne(messWin, "Réponse 300\n");
             break;
         case 400:
-            printf("Réponse 400\n");
+            afficherLigne(messWin, "Réponse 400\n");
             break;
         default:
-            printf("Requete inconnue\n");
+            afficherLigne(messWin, "Requete inconnue\n");
             break;
     }
 
@@ -78,6 +84,9 @@ void envoyer_requete(int soc, char *req){
 }
 
 int main(){
+	//Lancement de l'interface graphique
+	initialiserCurses();
+	
     //Création du socket client
     int socClient;
 
@@ -104,11 +113,15 @@ int main(){
 	sprintf(req,"%i\n",0);
 	envoyer_requete(socClient, req);*/
     pthread_join(threads[0], NULL);
-    printf("Join 0\n");
+    afficherLigne(messWin, "Join 0\n");
     pthread_join(threads[1], NULL);
-    printf("Join 1\n");
+    afficherLigne(messWin, "Join 1\n");
     //On ferme la socket
     close(socClient);
-    printf("Close socket 0\n");
+    afficherLigne(messWin, "Close socket 0\n");
+	
+	sleep(5);
+	//fermeture de l'interface graphique
+	fermerCurses();
     return 0;
 }

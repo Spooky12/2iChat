@@ -112,6 +112,9 @@ void* traiterClient(void* ptr){
 	return NULL;
 }
 
+void fermerCurses(){
+}
+
 int main(){
 	//Création des sockets
 	int socServeur, socClient;

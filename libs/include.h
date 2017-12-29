@@ -14,7 +14,7 @@
 #include "uthash.h" //Gestion des hashsets
 
 // Macros
-#define CHECK(v,mess) if (v<0){perror(mess);	exit(0);}
+#define CHECK(v,mess) if (v<0){perror(mess);	fermerCurses(); exit(0);}
 
 // Constantes
 #define PORT 5000
@@ -38,6 +38,8 @@ struct Salon {
 // affichage.c
 void initialiserCurses();
 void initialiserCouleurs();
+void drawChatWin();
+void drawInputWin();
 void afficherLigne(WINDOW *win, char* texte);
 void afficherMessage(WINDOW *win,char* pseudo, char* texte, int couleur);
 void fermerCurses();

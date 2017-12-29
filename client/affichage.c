@@ -1,6 +1,6 @@
 #include "../libs/include.h"
 
-extern WINDOW *mainWin;
+extern WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;
 
 void initialiserCurses() {
 	//Lancement de la fenetre principale
@@ -15,10 +15,12 @@ void initialiserCurses() {
 	initialiserCouleurs();
 
 //********TODO********//
-	/*drawChatWin();
+	drawChatWin();
 	drawInputWin();
-	drawInfoLines();
+	/*drawInfoLines();
 	asciiSplash();*/
+	wcursyncup(inputWin);
+	wrefresh(mainWin);
 }
 
 void initialiserCouleurs(){
@@ -36,6 +38,38 @@ void initialiserCouleurs(){
 	init_pair(6, COLOR_MAGENTA, -1);
 	init_pair(7, COLOR_GREEN, -1);
 	init_pair(8, COLOR_WHITE, COLOR_RED);
+}
+
+void drawChatWin() {
+   // Create window for chat box, draw said box 
+   messWinBox = subwin(mainWin, (LINES * 0.8), COLS, 0, 0);
+   box(messWinBox, 0, 0);
+   // Draw a slick title on it
+   mvwaddch(messWinBox, 0, (COLS * 0.5) - 6, ACS_RTEE);
+   wattron(messWinBox, COLOR_PAIR(3));
+   mvwaddstr(messWinBox, 0, (COLS * 0.5) - 5, " TBDChat " );
+   wattroff(messWinBox, COLOR_PAIR(3));
+   mvwaddch(messWinBox, 0, (COLS * 0.5) + 4, ACS_LTEE );
+   wrefresh(messWinBox);
+   // Create sub window in box to hold text
+   messWin = subwin(messWinBox, (LINES * 0.8 - 2), COLS - 2, 1, 1);
+   // Enable text scrolling
+   scrollok(messWin, TRUE);
+}
+
+/* Draw input box and window */
+void drawInputWin() {
+   // Create input box and window
+   textWin = subwin(mainWin, (LINES * 0.2) - 1, COLS, (LINES * 0.8) + 1, 0);
+   box(textWin, 0, 0);
+   inputWin = subwin(textWin, (LINES * 0.2) - 3, COLS - 2, (LINES * 0.8) + 2, 1);
+}
+
+void afficherLigne(WINDOW *win, char* texte){
+	wprintw(win, "%s",texte);
+	wrefresh(win);
+	wcursyncup(inputWin);
+	wrefresh(mainWin);
 }
 
 void fermerCurses(){
