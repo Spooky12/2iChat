@@ -41,6 +41,30 @@ void traiter_req100(struct Salon *salon, struct Client *client,char* texte){
     }
 }
 
+//TODO effectuer les actions lors de l'envoi d'une commande
+void traiter_req101(struct Salon *salon, struct Client *client,char* commande){
+	char message[BUFF_MAX];
+	struct Client *c;
+	if(strcmp(commande,"ping")==0){
+		
+	}else if(strcmp(commande,"list")==0){
+	
+	}else if(strcmp(commande,"pseudo")==0){
+	
+	}else if(strcmp(commande,"me")==0){
+	
+	}else if(strcmp(commande,"info")==0){
+	
+	}else if(strcmp(commande,"rand")==0){
+	
+	}else if(strcmp(commande,"connect")==0){
+	
+	}else{
+		
+	}
+	envoyer_reponse(client->socket, message);
+}
+
 void envoyer_reponse(int soc, char *req){
 	//On envoie la requete au serveur
     CHECK(write(soc, req, strlen(req)+1), "ERREUR WRITE");
@@ -93,6 +117,9 @@ void* traiterClient(void* ptr){
 		switch(resultat){
 			case 100:
 				traiter_req100(salon, client, param);
+			break;			
+			case 101:
+				traiter_req101(salon, client, param);
 			break;
 			case 0:
 				printf("Requete 0\n");

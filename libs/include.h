@@ -55,5 +55,15 @@ void envoyer_requete(int soc, char *req);
 int lire_requete(int soc, char * param);
 void envoyer_reponse(int soc, char *req);
 void traiter_req0(int soc);
-void traiter_req100(struct Salon *salon,struct Client *client, char* texe);
+void traiter_req100(struct Salon *salon,struct Client *client, char* texte);
+void traiter_req101(struct Salon *salon,struct Client *client, char* commande);
 void* traiterClient(void* ptr);
+
+// commandes.c
+void ping();
+void list();
+void pseudo();
+void me();
+void info();
+void rand();
+void connect();
