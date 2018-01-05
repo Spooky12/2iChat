@@ -57,13 +57,17 @@ void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
 	strncpy ( commande, texte, posi );
 	strcpy ( param, d + 1 );
 	
-	printf("Commande: %s", commande);
+	printf("Commande: %s\n", commande);
 	if(strcmp(commande,"ping")==0){
 		ping(message,1);
 	}else if(strcmp(commande,"pong")==0){
 		ping(message,0);
 	}else if(strcmp(commande,"list")==0){
-	
+		/*if(strcmp(salon, "Accueil")==0){
+			listeSalons(message,salon);
+		}else{*/
+			listeClients(message,salon);
+		//}
 	}else if(strcmp(commande,"pseudo")==0){
 	
 	}else if(strcmp(commande,"me")==0){
@@ -75,7 +79,7 @@ void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
 	}else if(strcmp(commande,"connect")==0){
 	
 	}else{
-		
+		sprintf(message, "401\n");
 	}
 	envoyer_reponse(client->socket, message);
 }

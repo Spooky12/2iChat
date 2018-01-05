@@ -63,7 +63,8 @@ void* traiterClient(void* ptr);
 
 // commandes.c
 void ping(char * message, int ping);
-void list();
+void listeClients(char *message, struct Salon *salon);
+void listeSalons(char *message, struct Salon *salon);
 void pseudo();
 void me();
 void info();
