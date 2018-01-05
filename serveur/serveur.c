@@ -59,6 +59,7 @@ void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
 	int posi = d - texte;
 	//On recupere le texte de la commande
 	strncpy ( commande, texte, posi );
+	commande[posi]='\0';
 	strcpy ( param, d + 1 );
 	
 	printf("Commande: %s\n", commande);
