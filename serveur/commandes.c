@@ -1,7 +1,11 @@
 #include "../libs/include.h"
 
-void ping(){
-	
+void ping(char *message, int ping){
+	if(ping){
+		sprintf(message, "200\npong");
+	}else{
+		sprintf(message, "200\nping");
+	}
 }
 
 void list(){

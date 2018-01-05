@@ -42,11 +42,26 @@ void traiter_req100(struct Salon *salon, struct Client *client,char* texte){
 }
 
 //TODO effectuer les actions lors de l'envoi d'une commande
-void traiter_req101(struct Salon *salon, struct Client *client,char* commande){
-	char message[BUFF_MAX];
-	struct Client *c;
+void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
+	char message[BUFF_MAX];//Message à envoyer au client
+	char commande[BUFF_MAX];//Commande entrée par le client
+	char param[BUFF_MAX];//parametres de la commende
+	//On recupere la première occurence de \n
+	char *d = strstr(texte, "\n");
+	if(d==NULL){
+		//TODO: gestion des erreurs
+	}
+	//On calcule la position du premier \n
+	int posi = d - texte;
+	//On recupere le texte de la commande
+	strncpy ( commande, texte, posi );
+	strcpy ( param, d + 1 );
+	
+	printf("Commande: %s", commande);
 	if(strcmp(commande,"ping")==0){
-		
+		ping(message,1);
+	}else if(strcmp(commande,"pong")==0){
+		ping(message,0);
 	}else if(strcmp(commande,"list")==0){
 	
 	}else if(strcmp(commande,"pseudo")==0){
@@ -110,9 +125,8 @@ void* traiterClient(void* ptr){
 	while(!fin && nbInconnu<10){
 		//On initialise une chaine param vide
 		char param[BUFF_MAX] = "";
-		//On attend une requete du client
+		//On attend une requete du client		
 		int resultat = lire_requete(socClient, param);
-		
 		//On gere les différentes requetes possibles
 		switch(resultat){
 			case 100:

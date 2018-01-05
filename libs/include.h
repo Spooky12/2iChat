@@ -58,11 +58,11 @@ int lire_requete(int soc, char * param);
 void envoyer_reponse(int soc, char *req);
 void traiter_req0(int soc);
 void traiter_req100(struct Salon *salon,struct Client *client, char* texte);
-void traiter_req101(struct Salon *salon,struct Client *client, char* commande);
+void traiter_req101(struct Salon *salon,struct Client *client, char* texte);
 void* traiterClient(void* ptr);
 
 // commandes.c
-void ping();
+void ping(char * message, int ping);
 void list();
 void pseudo();
 void me();
