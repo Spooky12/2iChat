@@ -20,10 +20,10 @@ void info(){
 	
 }
 
-void rand(){
+void alea(){
 	
 }
 
-void connect(){
+void connection(){
 	
 }

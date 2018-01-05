@@ -65,5 +65,5 @@ void list();
 void pseudo();
 void me();
 void info();
-void rand();
-void connect();
+void alea();
+void connection();
