@@ -49,6 +49,8 @@ void fermerCurses();
 void *gestion_envoie(void *soc);
 void *gestion_lecture(void *soc);
 void lire_reponse(int soc);
+void envoyer_message(int soc, char *req, char *message);
+void envoyer_commande(int soc, char *req, char *commande);
 void envoyer_requete(int soc, char *req);
 
 // serveur.c

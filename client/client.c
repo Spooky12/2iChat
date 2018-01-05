@@ -7,21 +7,13 @@ void* gestion_envoie(void *soc) {
     char req[BUFF_MAX];
 	char message[BUFF_MAX]="";
 
-	//TODO: fonction de lecture non bloquante
-	/*fgets(message, BUFF_MAX, stdin);
-	while(strcmp(message,"exit\n")!=0){
-		sprintf(req,"%i\n%s\n",100,message);
-		sprintf(message, "Envoie du message: %s", req);
-		afficherLigne(messWin, message);
-		envoyer_requete(sock, req);
-		fgets(message, BUFF_MAX, stdin);
-	}*/
     recupererMessage(message);
-    while(strcmp(message,"exit\n")!=0){
-        sprintf(req,"%i\n%s\n",100,message);
-        sprintf(message, "Envoie du message: %s", req);
-        afficherLigne(messWin, message);
-        envoyer_requete(sock, req);
+    while(strcmp(message,"\\exit\n")!=0){
+        if(message[0] == '\\') {
+            envoyer_commande(sock, req, message);
+        } else {
+            envoyer_message(sock, req, message);
+        }
         strcpy(message, "");
         recupererMessage(message);
     }
@@ -40,6 +32,7 @@ void* gestion_lecture(void *soc) {
         lire_reponse(sock);
     }
 }
+
 
 void lire_reponse(int soc){
     char rep[BUFF_MAX];
@@ -86,11 +79,50 @@ void lire_reponse(int soc){
 
 }
 
+/**
+ * @name envoyer_message
+ * @brief Fonction permettant l'envoie de message
+ * @param soc
+ * @param req
+ * @param message
+ */
+void envoyer_message(int soc, char *req, char *message) {
+    sprintf(req,"%i\n%s\n",100,message);
+    sprintf(message, "Envoie du message: %s", req);
+    afficherLigne(messWin, message);
+    envoyer_requete(soc, req);
+}
+
+/**
+ * @name envoyer_commande
+ * @brief Fonction permettant l'envoie de commande
+ * @param soc
+ * @param req
+ * @param commande
+ */
+void envoyer_commande(int soc, char *req, char *commande) {
+    for(int i=0; i<strlen(commande); i++){
+        if(commande[i+1] != ' ' ) {
+            commande[i] = commande[i+1];
+        } else {
+            commande[i] = '\n';
+        }
+    }
+    sprintf(req,"%i\n%s\n",101,commande);
+    sprintf(commande, "Envoie de la commande: %s", req);
+    afficherLigne(messWin, commande);
+    envoyer_requete(soc, req);
+}
+
+/**
+ * @name envoyer_requete
+ * @brief Fonction permettant l'envoie de requete
+ * @param soc
+ * @param req
+ */
 void envoyer_requete(int soc, char *req){
 	//On envoie la requete au serveur
     CHECK(write(soc, req, strlen(req)+1), "ERREUR WRITE");
-
-	//lire_reponse(soc);
 }
 
 int main(){

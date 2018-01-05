@@ -90,14 +90,14 @@ void recupererMessage(char *message) {
                 strncpy(temp, message, strlen(message) - 1);
                 strcpy(message, temp);
             }
-        }
-        else if(c>=32 && c<=126) {
-            char ch[5];
+        } else if(c>=32 && c<=255) {
+            char ch[1];
             sprintf(ch, "%c", c);
             strcat(message, ch);
         }
+
         wclear(inputWin);
-        mvwprintw(inputWin, 1, 1, message);
+        mvwprintw(inputWin, 0, 0, message);
         wrefresh(inputWin);
     }
 	//return NULL;
