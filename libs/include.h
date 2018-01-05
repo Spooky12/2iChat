@@ -56,6 +56,7 @@ void envoyer_requete(int soc, char *req);
 // serveur.c
 int lire_requete(int soc, char * param);
 void envoyer_reponse(int soc, char *req);
+void diffusion(struct Salon *salon, char* message);
 void traiter_req0(int soc);
 void traiter_req100(struct Salon *salon,struct Client *client, char* texte);
 void traiter_req101(struct Salon *salon,struct Client *client, char* texte);
@@ -65,7 +66,7 @@ void* traiterClient(void* ptr);
 void ping(char * message, int ping);
 void listeClients(char *message, struct Salon *salon);
 void listeSalons(char *message, struct Salon *salon);
-void pseudo();
+void pseudo(char *message, struct Client *client, struct Salon *salon, char *texte);
 void me();
 void info();
 void alea();

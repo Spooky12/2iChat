@@ -24,6 +24,14 @@ int lire_requete(int soc, char * param){
 	return req;
 }
 
+void diffusion(struct Salon *salon, char* message){
+	struct Client *c;
+	for(c=salon->clients; c != NULL; c=c->hh.next) {
+		printf("Client: %s\n", c->nom);
+		envoyer_reponse(c->socket, message);
+    }
+}
+
 void traiter_req0(int soc){
 	char message[BUFF_MAX];
 	sprintf(message, "0\n");
@@ -32,13 +40,9 @@ void traiter_req0(int soc){
 
 void traiter_req100(struct Salon *salon, struct Client *client,char* texte){
 	char message[BUFF_MAX];
-	struct Client *c;
 	sprintf(message, "200\n%s\n%i\n%s",client->nom, client->couleur, texte);
 	printf("Requete: %s\n", message);
-	for(c=salon->clients; c != NULL; c=c->hh.next) {
-		printf("Client: %s\n", c->nom);
-		envoyer_reponse(c->socket, message);
-    }
+	diffusion(salon, message);
 }
 
 //TODO effectuer les actions lors de l'envoi d'une commande
@@ -60,16 +64,20 @@ void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
 	printf("Commande: %s\n", commande);
 	if(strcmp(commande,"ping")==0){
 		ping(message,1);
+		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"pong")==0){
 		ping(message,0);
+		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"list")==0){
 		/*if(strcmp(salon, "Accueil")==0){
 			listeSalons(message,salon);
 		}else{*/
 			listeClients(message,salon);
 		//}
+		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"pseudo")==0){
-	
+		pseudo(message, client, salon, param);
+		diffusion(salon, message);
 	}else if(strcmp(commande,"me")==0){
 	
 	}else if(strcmp(commande,"info")==0){
@@ -80,8 +88,8 @@ void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
 	
 	}else{
 		sprintf(message, "401\n");
+		envoyer_reponse(client->socket, message);
 	}
-	envoyer_reponse(client->socket, message);
 }
 
 void envoyer_reponse(int soc, char *req){
