@@ -2,6 +2,11 @@
 
 WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;
 
+/***
+ * @name gestion_envoie
+ * @brief boucle permettant de s'occuper de du traitement et de l'envoie au serveur des inputs du client
+ * @param soc
+ */
 void* gestion_envoie(void *soc) {
     int sock = *(int*) soc;
     char req[BUFF_MAX];
@@ -25,7 +30,11 @@ void* gestion_envoie(void *soc) {
     pthread_exit(0);
 }
 
-
+/***
+ * @name gestion_lecture
+ * @brief boucle permettant de s'occuper de la reception et du traitement des requetes du serveur
+ * @param soc
+ */
 void* gestion_lecture(void *soc) {
     int sock = *(int*) soc;
     while(1) {
@@ -57,7 +66,11 @@ void split(char *dest, char *params) {
     strcpy(params, d+1);
 }
 
-
+/***
+ * @name lire_reponse
+ * @brief fonction permettant de s'occuper de la reception et du traitement des requetes du serveur
+ * @param soc
+ */
 void lire_reponse(int soc){
     char rep[BUFF_MAX];
     int repID=-1;
@@ -74,6 +87,8 @@ void lire_reponse(int soc){
 
     char params[BUFF_MAX]="";
     char repIDc[BUFF_MAX];
+
+    //recuperation du code de la requete
     stpcpy(params, rep);
     split(repIDc, params);
     if(strcmp(repIDc,"")==0) {
@@ -82,8 +97,9 @@ void lire_reponse(int soc){
     }
     repID = atoi(repIDc);
 
+    //switch pour faire le traitement associe au code de la requete
     switch(repID){
-        case 0 :
+        case 0 : //Quitter
             afficherLigne(messWin, "Réponse 0\n");
             pthread_exit(0);
             break;
@@ -115,17 +131,16 @@ void lire_reponse(int soc){
         case 300:
             afficherLigne(messWin, "Réponse 300\n");
             break;
-        case 400:
+        case 400: //Erreur
             sleep(0);
             char messErreur[BUFF_MAX];
             split(messErreur, params);
             afficherMessage(messWin, "ERREUR 400", messErreur, 8);
             break;
-        case 401:
-
+        case 401: //Erreur commande
             afficherMessage(messWin, "ERREUR 401", "Commande inconnue" , 8);
             break;
-        default:
+        default: //Code requete inconnu
             afficherMessage(messWin, "REQUETTE INCONNUE", repIDc , 8);
             break;
     }
@@ -205,6 +220,7 @@ int main(){
     CHECK(pthread_create(&threads[0], NULL, gestion_envoie, (void *) &socClient ), "ERREUR création thread envoie")
     CHECK(pthread_create(&threads[1], NULL, gestion_lecture, (void *) &socClient), "ERREUR création thread lecture")
 
+    //On attend la fin des thread
     pthread_join(threads[0], NULL);
     afficherLigne(messWin, "Join 0\n");
     pthread_join(threads[1], NULL);

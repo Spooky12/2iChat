@@ -23,6 +23,7 @@ void initialiserCurses() {
 	drawInputWin();
 	/*drawInfoLines();
 	asciiSplash();*/
+    //Mise a jour de la fenetre
 	wcursyncup(inputWin);
 	wrefresh(mainWin);
 }
@@ -97,6 +98,7 @@ void afficherMessage(WINDOW *win, char* pseudo, char* texte, int couleur) {
     wprintw(win, "%s", texte);
     wprintw(win, "\n");
     wattroff(win, COLOR_PAIR(couleur));
+    //Mise a jour de la fenetre
     wrefresh(win);
     wcursyncup(inputWin);
     wrefresh(mainWin);
@@ -110,6 +112,7 @@ void afficherMessage(WINDOW *win, char* pseudo, char* texte, int couleur) {
  */
 void afficherLigne(WINDOW *win, char* texte){
 	wprintw(win, "%s",texte);
+    //Mise a jour de la fenetre
 	wrefresh(win);
 	wcursyncup(inputWin);
 	wrefresh(mainWin);
@@ -125,7 +128,7 @@ void recupererMessage(char *message) {
     while(1)
     {
         c = wgetch(mainWin);
-        if(c==10) {
+        if(c==10) { //retour chariot
             strcat(message, "\n");
             wclear(inputWin);
             wrefresh(inputWin);
@@ -137,14 +140,14 @@ void recupererMessage(char *message) {
                 strncpy(temp, message, strlen(message) - 1);
                 strcpy(message, temp);
             }
-        } else if(c>=32 && c<=255) {
+        } else if(c>=32 && c<=255) { //charactere ascii etendu
             char ch[1];
             sprintf(ch, "%c", c);
             strcat(message, ch);
         }
-
         wclear(inputWin);
         mvwprintw(inputWin, 0, 0, message);
+        //Mise a jour de la fenetre
         wrefresh(inputWin);
     }
 }
