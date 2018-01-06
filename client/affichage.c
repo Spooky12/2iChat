@@ -2,6 +2,10 @@
 
 extern WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;
 
+/**
+ * @name initialiserCurses
+ * @brief Fonction initialisant les différents parametres de  curses
+ */
 void initialiserCurses() {
 	//Lancement de la fenetre principale
 	if ((mainWin = initscr()) == NULL) { exit(1); }
@@ -23,6 +27,10 @@ void initialiserCurses() {
 	wrefresh(mainWin);
 }
 
+/**
+ * @name initialiserCouleurs
+ * @brief Fonction initialisant les 9 paires de couleurs
+ */
 void initialiserCouleurs(){
 	//Lancement des couleurs
 	start_color();
@@ -41,6 +49,10 @@ void initialiserCouleurs(){
 	init_pair(8, COLOR_WHITE, COLOR_RED);
 }
 
+/**
+ * @name drawChatWin
+ * @brief Fonction créant la fenetre utilisée pour afficher les messages
+ */
 void drawChatWin() {
    // Create window for chat box, draw said box 
    messWinBox = subwin(mainWin, (LINES * 0.8), COLS, 0, 0);
@@ -58,7 +70,10 @@ void drawChatWin() {
    scrollok(messWin, TRUE);
 }
 
-/* Draw input box and window */
+/**
+ * @name drawInputWin
+ * @brief Fonction créant la fenetre utilisée pour taper les messages
+ */
 void drawInputWin() {
    // Create input box and window
    textWin = subwin(mainWin, (LINES * 0.2) - 1, COLS, (LINES * 0.8) + 1, 0);
@@ -66,6 +81,14 @@ void drawInputWin() {
    inputWin = subwin(textWin, (LINES * 0.2) - 3, COLS - 2, (LINES * 0.8) + 2, 1);
 }
 
+/**
+ * @name afficherMessage
+ * @brief Fonction permettant d'afficher un message
+ * @param win
+ * @param pseudo
+ * @param texte
+ * @param couleur
+ */
 void afficherMessage(WINDOW *win, char* pseudo, char* texte, int couleur) {
     wattron(win, COLOR_PAIR(couleur));
     wprintw(win, "%s", pseudo);
@@ -78,6 +101,12 @@ void afficherMessage(WINDOW *win, char* pseudo, char* texte, int couleur) {
     wrefresh(mainWin);
 }
 
+/**
+ * @name afficherLigne
+ * @brief Fonction permettant d'afficher une ligne de texte
+ * @param win
+ * @param texte
+ */
 void afficherLigne(WINDOW *win, char* texte){
 	wprintw(win, "%s",texte);
 	wrefresh(win);
@@ -85,6 +114,11 @@ void afficherLigne(WINDOW *win, char* texte){
 	wrefresh(mainWin);
 }
 
+/**
+ * @name recupererMessage
+ * @brief Fonction permettant de récupérer les frappes clavier
+ * @param message
+ */
 void recupererMessage(char *message) {
     int c;
     //char message[BUFF_MAX];
@@ -116,6 +150,10 @@ void recupererMessage(char *message) {
 	//return NULL;
 }
 
+/**
+ * @name fermerCurses
+ * @brief Fonction permettant de fermer correctement ncurses
+ */
 void fermerCurses(){
 	endwin();
 }

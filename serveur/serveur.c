@@ -2,6 +2,12 @@
 
 struct Salon *salons = NULL;
 
+/**
+ * @name lire_requete
+ * @brief Fonction permettant de lire un socket
+ * @param soc
+ * @param param
+ */
 int lire_requete(int soc, char * param){
 	char buffer[BUFF_MAX];
 	//On lit la socket
@@ -24,6 +30,12 @@ int lire_requete(int soc, char * param){
 	return req;
 }
 
+/**
+ * @name diffusion
+ * @brief Fonction permettant de diffuser un message à tous les membres d'un salon
+ * @param salon
+ * @param message
+ */
 void diffusion(struct Salon *salon, char* message){
 	struct Client *c;
 	for(c=salon->clients; c != NULL; c=c->hh.next) {
@@ -32,11 +44,23 @@ void diffusion(struct Salon *salon, char* message){
     }
 }
 
+/**
+ * @name traiter_req0
+ * @brief Fonction permettant de traiter une requete de fermeture
+ * @param soc
+ */
 void traiter_req0(int soc){
 	char message[BUFF_MAX];
 	sprintf(message, "0\n");
 }
 
+/**
+ * @name traiter_req100
+ * @brief Fonction permettant de traiter une requete de message
+ * @param salon
+ * @param client
+ * @param texte
+ */
 void traiter_req100(struct Salon *salon, struct Client *client,char* texte){
 	char message[BUFF_MAX];
 	sprintf(message, "200\n%s\n%i\n%s",client->nom, client->couleur, texte);
@@ -44,7 +68,13 @@ void traiter_req100(struct Salon *salon, struct Client *client,char* texte){
 	diffusion(salon, message);
 }
 
-//TODO effectuer les actions lors de l'envoi d'une commande
+/**
+ * @name traiter_req101
+ * @brief Fonction permettant de traiter une requete de commande
+ * @param salon
+ * @param client
+ * @param texte
+ */
 void traiter_req101(struct Salon **salon, struct Client *client,char* texte){
 	char message[BUFF_MAX];//Message à envoyer au client
 	char commande[BUFF_MAX];//Commande entrée par le client
@@ -98,11 +128,21 @@ void traiter_req101(struct Salon **salon, struct Client *client,char* texte){
 	}
 }
 
+/**
+ * @name envoyer_reponse
+ * @brief Fonction permettant de transmettre une requete à un socket
+ * @param soc
+ * @param req
+ */
 void envoyer_reponse(int soc, char *req){
 	//On envoie la requete au serveur
     CHECK(write(soc, req, strlen(req)+1), "ERREUR WRITE");
 }
 
+/**
+ * @name envoyer_reponse
+ * @brief Fonction permettant d'initialiser le serveur et le salon d'accueil
+ */
 void initServeur(){
 	struct Salon *salon = NULL;
 	//Création du salon d'accueil
@@ -113,6 +153,11 @@ void initServeur(){
 	HASH_ADD_STR( salons, nom, salon);
 }
 
+/**
+ * @name traiterClient
+ * @brief Boucle principale d'un client
+ * @param ptr
+ */
 void* traiterClient(void* ptr){
 	int socClient = *(int *) ptr;
 	static int i = 0;
@@ -195,9 +240,17 @@ void split(char *dest, char *params) {
     strcpy(params, d+1);
 }
 
+/**
+ * @name fermerCurses
+ * @brief Fonction permettant de fermer correctement ncurses
+ */
 void fermerCurses(){
 }
 
+/**
+ * @name main
+ * @brief Fonction principale du serveur, recevant et initialisant chaque nouveau client
+ */
 int main(){
 	//Création des sockets
 	int socServeur, socClient;

@@ -1,5 +1,11 @@
 #include "../libs/include.h"
 
+/***
+ * @name ping
+ * @brief Fonction permettant de répondre pong à un ping et ping à un pong
+ * @param message
+ * @param ping
+ */
 void ping(char *message, int ping){
 	if(ping){
 		sprintf(message, "201\npong\n");
@@ -8,6 +14,12 @@ void ping(char *message, int ping){
 	}
 }
 
+/***
+ * @name listeClients
+ * @brief Fonction permettant de recupérer la liste des clients d'un salon
+ * @param message
+ * @param salon
+ */
 void listeClients(char *message, struct Salon *salon){
 	struct Client *c;
 	sprintf(message, "201\n");
@@ -17,6 +29,12 @@ void listeClients(char *message, struct Salon *salon){
     }
 }
 
+/***
+ * @name listeSalons
+ * @brief Fonction permettant de recupérer la liste des salons existant
+ * @param message
+ * @param salon
+ */
 void listeSalons(char *message, struct Salon *salon){
 	struct Salon *s;
 	sprintf(message, "201\n");
@@ -26,6 +44,14 @@ void listeSalons(char *message, struct Salon *salon){
     }
 }
 
+/***
+ * @name pseudo
+ * @brief Fonction permettant de changer de pseudo
+ * @param message
+ * @param client
+ * @param salon
+ * @param texte
+ */
 int pseudo(char *message, struct Client *client, struct Salon *salon, char *texte){
 	struct Client *c;
 	char ps[BUFF_MAX];
@@ -48,6 +74,13 @@ int pseudo(char *message, struct Client *client, struct Salon *salon, char *text
 	}
 }
 
+/***
+ * @name couleur
+ * @brief Fonction permettant de changer de couleur
+ * @param message
+ * @param client
+ * @param texte
+ */
 void couleur(char *message, struct Client *client, char *texte){
 	struct Client *c;
 	char cou[BUFF_MAX];
@@ -67,6 +100,13 @@ void couleur(char *message, struct Client *client, char *texte){
 	}
 }
 
+/***
+ * @name me
+ * @brief Fonction permettant de formater une commande de type \me
+ * @param message
+ * @param client
+ * @param param
+ */
 void me(char *message, struct Client *client, char *param){
 	char temp[BUFF_MAX] = "";
 	sprintf(message, "211\n%s", client->nom);
@@ -78,6 +118,13 @@ void me(char *message, struct Client *client, char *param){
 	strcat(message,"\n");
 }
 
+/***
+ * @name info
+ * @brief Fonction permettant d'obtenir des informations sur le salon actuel
+ * @param message
+ * @param client
+ * @param salon
+ */
 void info(char *message, struct Client *client, struct Salon *salon){
 	sprintf(message, "201\nBonjour %s", client->nom);
 	sprintf(message, "%s\nVous êtes sur le salon %s", message, salon->nom);
@@ -89,6 +136,12 @@ void info(char *message, struct Client *client, struct Salon *salon){
 	}
 }
 
+/***
+ * @name min
+ * @brief Fonction permettant d'obtenir le min entre a et b
+ * @param a
+ * @param b
+ */
 int min(int a, int b){
 	if(a<b){
 		return a;
@@ -96,12 +149,25 @@ int min(int a, int b){
 	return b;
 }
 
+/***
+ * @name max
+ * @brief Fonction permettant d'obtenir le max entre a et b
+ * @param a
+ * @param b
+ */
 int max(int a, int b){
 	if(a>b){
 		return a;
 	}
 	return b;
 }
+
+/***
+ * @name alea
+ * @brief Fonction permettant d'obtenir un nombre aléatoire entre deux nombres donnés
+ * @param message
+ * @param param
+ */
 void alea(char *message, char *param){
 	char tmp[BUFF_MAX];
 	split(tmp, param);
@@ -111,6 +177,14 @@ void alea(char *message, char *param){
 	sprintf(message, "201\nNombre aléatoire: %d\n", (rand()% (max(a,b) - min(a,b) + 1)) + min(a,b));
 }
 
+/***
+ * @name creation
+ * @brief Fonction permettant de créer un salon
+ * @param message
+ * @param param
+ * @param salon
+ * @param client
+ */
 void creation(char *message, char *param, struct Salon **salon, struct Client *client){
 	struct Salon *newSalon;
 	char nom[BUFF_MAX];
@@ -139,6 +213,14 @@ void creation(char *message, char *param, struct Salon **salon, struct Client *c
 	}
 }
 
+/***
+ * @name connection
+ * @brief Fonction permettant de rejoindre un salon
+ * @param message
+ * @param param
+ * @param salon
+ * @param client
+ */
 void connection(char *message, char *param, struct Salon **salon, struct Client *client){
 	struct Salon *s;
 	char nom[BUFF_MAX];
