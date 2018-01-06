@@ -58,8 +58,8 @@ void couleur(char *message, struct Client *client, char *texte){
 		//TODO expliquer le fonctionnement de couleur
 	}else{
 		couleur = atoi(cou);
-		if(couleur < 8 && couleur >= 0){
-			client->couleur = couleur;
+		if(couleur < 9 && couleur > 0){
+			client->couleur = couleur-1;
 			sprintf(message, "201\nCouleur bien changée\n");
 		}else{
 			sprintf(message, "400\nErreur lors du changement de couleur\n");
@@ -69,7 +69,7 @@ void couleur(char *message, struct Client *client, char *texte){
 
 void me(char *message, struct Client *client, char *param){
 	char temp[BUFF_MAX] = "";
-	sprintf(message, "201\n%s", client->nom);
+	sprintf(message, "211\n%s", client->nom);
 	split(temp, param);
 	while(strcmp(param, "")!=0){
 		sprintf(message, "%s %s", message, temp);
@@ -77,8 +77,15 @@ void me(char *message, struct Client *client, char *param){
 	}
 }
 
-void info(){
-	
+void info(char *message, struct Client *client, struct Salon *salon){
+	sprintf(message, "201\nBonjour %s", client->nom);
+	sprintf(message, "%s\nVous êtes sur le salon %s", message, salon->nom);
+	int nb = HASH_COUNT(salon->clients);
+	if(nb==1){
+		sprintf(message, "%s\n%d personne est actuellement sur ce salon", message, nb);
+	}else{	
+		sprintf(message, "%s\n%d personnes sont actuellement sur ce salon", message, nb);
+	}
 }
 
 void alea(){

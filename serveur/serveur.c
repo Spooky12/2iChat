@@ -81,7 +81,8 @@ void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
 		me(message, client, param);
 		diffusion(salon, message);
 	}else if(strcmp(commande,"info")==0){
-	
+		info(message, client, salon);
+		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"rand")==0){
 	
 	}else if(strcmp(commande,"connect")==0){
