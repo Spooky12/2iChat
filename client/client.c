@@ -75,7 +75,7 @@ void lire_reponse(int soc){
     char repIDc[BUFF_MAX];
     stpcpy(params, rep);
     split(repIDc, params);
-    if(repIDc=="") {
+    if(strcmp(repIDc,"")==0) {
         afficherLigne(messWin, "Requete vide : exit thread\n");
         pthread_exit(0);
     }

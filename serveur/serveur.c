@@ -77,8 +77,14 @@ void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
 		//}
 		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"pseudo")==0){
-		pseudo(message, client, salon, param);
-		diffusion(salon, message);
+		if(pseudo(message, client, salon, param)){
+			diffusion(salon, message);//Changement de pseudo ok, on informe tous le monde
+		}else{
+			envoyer_reponse(client->socket, message);//Erreur lors du changement de pseudo, on informe seulement le client
+		}
+	}else if(strcmp(commande,"couleur")==0){
+		couleur(message, client, param);
+		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"me")==0){
 	
 	}else if(strcmp(commande,"info")==0){
@@ -88,6 +94,7 @@ void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
 	}else if(strcmp(commande,"connect")==0){
 	
 	}else{
+		printf("Reception d\"une commande inconnue: \"%s\"\n", commande);
 		sprintf(message, "401\n");
 		envoyer_reponse(client->socket, message);
 	}
@@ -164,6 +171,30 @@ void* traiterClient(void* ptr){
 	//On ferme la socket client
 	close(socClient);
 	return NULL;
+}
+
+/***
+ * @name split
+ * @brief Fonction qui permet de déplacer params dans dest jusqu'au premier \n
+ * @param dest
+ * @param params
+ */
+void split(char *dest, char *params) {
+    strcpy(dest, "");
+    if(params==NULL) {
+        return;
+    }
+    char *d = strstr(params, "\n");
+    if(d==NULL) {
+        strcpy(dest, params);
+        strcpy(params, "");
+        return;
+    }
+    int pos = d - params;
+
+    strncpy(dest, params, pos);
+    dest[pos]='\0';
+    strcpy(params, d+1);
 }
 
 void fermerCurses(){
