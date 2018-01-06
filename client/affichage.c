@@ -30,7 +30,8 @@ void initialiserCouleurs(){
 	use_default_colors();
 
 	//Initialisation des paires de couleur
-	init_pair(1, -1, -1);                           
+	init_pair(0, -1, -1);
+	init_pair(1, -1, -1);
 	init_pair(2, COLOR_CYAN, -1);
 	init_pair(3, COLOR_YELLOW, -1);
 	init_pair(4, COLOR_RED, -1);
@@ -63,6 +64,18 @@ void drawInputWin() {
    textWin = subwin(mainWin, (LINES * 0.2) - 1, COLS, (LINES * 0.8) + 1, 0);
    box(textWin, 0, 0);
    inputWin = subwin(textWin, (LINES * 0.2) - 3, COLS - 2, (LINES * 0.8) + 2, 1);
+}
+
+void afficherMessage(WINDOW *win, char* pseudo, char* texte, int couleur) {
+    wattron(win, COLOR_PAIR(couleur));
+    wprintw(win, "%s", pseudo);
+    wprintw(win, " : ");
+    wprintw(win, "%s", texte);
+    wprintw(win, "\n");
+    wattroff(win, COLOR_PAIR(couleur));
+    wrefresh(win);
+    wcursyncup(inputWin);
+    wrefresh(mainWin);
 }
 
 void afficherLigne(WINDOW *win, char* texte){

@@ -33,6 +33,30 @@ void* gestion_lecture(void *soc) {
     }
 }
 
+/***
+ * @name split
+ * @brief Fonction qui permet de déplacer params dans dest jusqu'au premier \n
+ * @param dest
+ * @param params
+ */
+void split(char *dest, char *params) {
+    strcpy(dest, "");
+    if(params==NULL) {
+        return;
+    }
+    char *d = strstr(params, "\n");
+    if(d==NULL) {
+        strcpy(dest, params);
+        strcpy(params, "");
+        return;
+    }
+    int pos = d - params;
+
+    strncpy(dest, params, pos);
+    dest[pos]='\0';
+    strcpy(params, d+1);
+}
+
 
 void lire_reponse(int soc){
     char rep[BUFF_MAX];
@@ -43,28 +67,35 @@ void lire_reponse(int soc){
     //On lit la réponse
     CHECK(read(soc, rep, BUFF_MAX), "ERREUR READ")
 
-	char temp[BUFF_MAX];
+	/*char temp[BUFF_MAX];
 	sprintf(temp ,"Requete recu : '%s'\n", rep);
-	afficherLigne(messWin, temp);
-	
-    char *d = strstr(rep, "\n");
-    if(d==NULL) {
+	afficherLigne(messWin, temp);*/
+
+    char params[BUFF_MAX];
+    char repIDc[BUFF_MAX];
+    stpcpy(params, rep);
+    split(repIDc, params);
+    if(repIDc=="") {
         afficherLigne(messWin, "Requete vide : exit thread\n");
         pthread_exit(0);
     }
-    int pos = d - rep;
-    char repIDc[BUFF_MAX];
-    strncpy(repIDc, rep, pos);
     repID = atoi(repIDc);
-    char params[BUFF_MAX];
-    strcpy(params, d+1);
+
     switch(repID){
         case 0 :
             afficherLigne(messWin, "Réponse 0\n");
             pthread_exit(0);
             break;
         case 200:
-            afficherLigne(messWin, "Réponse 200\n");
+            sleep(0);
+            //afficherLigne(messWin, "Réponse 200\n");
+            char pseudo[BUFF_MAX], cCouleur[BUFF_MAX], texte[BUFF_MAX];
+            split(pseudo, params);
+            split(cCouleur, params);
+            int couleur = atoi(cCouleur);
+            split(texte, params);
+            afficherMessage(messWin, pseudo, texte, couleur);
+            strcpy(params, "");
             break;
         case 300:
             afficherLigne(messWin, "Réponse 300\n");
@@ -88,8 +119,8 @@ void lire_reponse(int soc){
  */
 void envoyer_message(int soc, char *req, char *message) {
     sprintf(req,"%i\n%s\n",100,message);
-    sprintf(message, "Envoie du message: %s", req);
-    afficherLigne(messWin, message);
+    /*sprintf(message, "Envoie du message: %s", req);
+    afficherLigne(messWin, message);*/
     envoyer_requete(soc, req);
 }
 
