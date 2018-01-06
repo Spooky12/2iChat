@@ -47,6 +47,7 @@ void initialiserCouleurs(){
 	init_pair(6, COLOR_MAGENTA, -1);
 	init_pair(7, COLOR_GREEN, -1);
 	init_pair(8, COLOR_WHITE, COLOR_RED);
+	init_pair(9, COLOR_WHITE, COLOR_GREEN);
 }
 
 /**
@@ -121,7 +122,6 @@ void afficherLigne(WINDOW *win, char* texte){
  */
 void recupererMessage(char *message) {
     int c;
-    //char message[BUFF_MAX];
     while(1)
     {
         c = wgetch(mainWin);
@@ -147,7 +147,6 @@ void recupererMessage(char *message) {
         mvwprintw(inputWin, 0, 0, message);
         wrefresh(inputWin);
     }
-	//return NULL;
 }
 
 /**

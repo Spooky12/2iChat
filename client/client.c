@@ -67,6 +67,7 @@ void lire_reponse(int soc){
     //On lit la réponse
     CHECK(read(soc, rep, BUFF_MAX), "ERREUR READ")
 
+    //TEST affiche les requetes entrente
 	/*char temp[BUFF_MAX];
 	sprintf(temp ,"Requete recu : '%s'\n", rep);
 	afficherLigne(messWin, temp);*/
@@ -88,7 +89,6 @@ void lire_reponse(int soc){
             break;
         case 200: //Message
             sleep(0);
-            //afficherLigne(messWin, "Réponse 200\n");
             char pseudo[BUFF_MAX], cCouleur[BUFF_MAX], texte[BUFF_MAX];
             split(pseudo, params);
             split(cCouleur, params);
@@ -104,15 +104,12 @@ void lire_reponse(int soc){
             strcat(message, temp);
             while(strcmp(params, "") !=0){
                 split(temp, params);
-                strcat(message, " ");
+                strcat(message, "\n");
                 strcat(message, temp);
             }
-            afficherMessage(messWin, "SERVEUR", message, 8);
-            //afficherLigne(messWin, params);
+            afficherMessage(messWin, "SERVEUR", message, 9);
             break;
 		case 211: // \me
-            //sleep(0);
-            //afficherLigne(messWin, "Réponse 200\n");
             afficherLigne(messWin, params);
             break;
         case 300:
@@ -129,7 +126,6 @@ void lire_reponse(int soc){
             afficherMessage(messWin, "ERREUR 401", "Commande inconnue" , 8);
             break;
         default:
-            //afficherLigne(messWin, "Requete inconnue\n");
             afficherMessage(messWin, "REQUETTE INCONNUE", repIDc , 8);
             break;
     }
@@ -145,6 +141,7 @@ void lire_reponse(int soc){
  */
 void envoyer_message(int soc, char *req, char *message) {
     sprintf(req,"%i\n%s\n",100,message);
+    //TEST affiche la requete sortante
     /*sprintf(message, "Envoie du message: %s", req);
     afficherLigne(messWin, message);*/
     envoyer_requete(soc, req);
@@ -166,6 +163,7 @@ void envoyer_commande(int soc, char *req, char *commande) {
         }
     }
     sprintf(req,"%i\n%s\n",101,commande);
+    //TEST affiche la requete sortante
     /*sprintf(commande, "Envoie de la commande: %s", req);
     afficherLigne(messWin, commande);*/
     envoyer_requete(soc, req);
@@ -207,10 +205,6 @@ int main(){
     CHECK(pthread_create(&threads[0], NULL, gestion_envoie, (void *) &socClient ), "ERREUR création thread envoie")
     CHECK(pthread_create(&threads[1], NULL, gestion_lecture, (void *) &socClient), "ERREUR création thread lecture")
 
-	/*sprintf(req,"%i\n",100);
-	envoyer_requete(socClient, req);
-	sprintf(req,"%i\n",0);
-	envoyer_requete(socClient, req);*/
     pthread_join(threads[0], NULL);
     afficherLigne(messWin, "Join 0\n");
     pthread_join(threads[1], NULL);
