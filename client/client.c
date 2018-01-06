@@ -71,7 +71,7 @@ void lire_reponse(int soc){
 	sprintf(temp ,"Requete recu : '%s'\n", rep);
 	afficherLigne(messWin, temp);*/
 
-    char params[BUFF_MAX];
+    char params[BUFF_MAX]="";
     char repIDc[BUFF_MAX];
     stpcpy(params, rep);
     split(repIDc, params);
@@ -86,7 +86,7 @@ void lire_reponse(int soc){
             afficherLigne(messWin, "Réponse 0\n");
             pthread_exit(0);
             break;
-        case 200:
+        case 200: //Message
             sleep(0);
             //afficherLigne(messWin, "Réponse 200\n");
             char pseudo[BUFF_MAX], cCouleur[BUFF_MAX], texte[BUFF_MAX];
@@ -95,10 +95,23 @@ void lire_reponse(int soc){
             int couleur = atoi(cCouleur);
             split(texte, params);
             afficherMessage(messWin, pseudo, texte, couleur);
-            strcpy(params, "");
             break;
-		case 201:
+		case 201: // message serveur
             sleep(0);
+            char message[BUFF_MAX]="";
+            char temp[BUFF_MAX]="";
+            split(temp, params);
+            strcat(message, temp);
+            while(strcmp(params, "") !=0){
+                split(temp, params);
+                strcat(message, " ");
+                strcat(message, temp);
+            }
+            afficherMessage(messWin, "SERVEUR", message, 8);
+            //afficherLigne(messWin, params);
+            break;
+		case 211: // \me
+            //sleep(0);
             //afficherLigne(messWin, "Réponse 200\n");
             afficherLigne(messWin, params);
             break;
@@ -106,10 +119,18 @@ void lire_reponse(int soc){
             afficherLigne(messWin, "Réponse 300\n");
             break;
         case 400:
-            afficherLigne(messWin, "Réponse 400\n");
+            sleep(0);
+            char messErreur[BUFF_MAX];
+            split(messErreur, params);
+            afficherMessage(messWin, "ERREUR 400", messErreur, 8);
+            break;
+        case 401:
+
+            afficherMessage(messWin, "ERREUR 401", "Commande inconnue" , 8);
             break;
         default:
-            afficherLigne(messWin, "Requete inconnue\n");
+            //afficherLigne(messWin, "Requete inconnue\n");
+            afficherMessage(messWin, "REQUETTE INCONNUE", repIDc , 8);
             break;
     }
 
@@ -145,8 +166,8 @@ void envoyer_commande(int soc, char *req, char *commande) {
         }
     }
     sprintf(req,"%i\n%s\n",101,commande);
-    sprintf(commande, "Envoie de la commande: %s", req);
-    afficherLigne(messWin, commande);
+    /*sprintf(commande, "Envoie de la commande: %s", req);
+    afficherLigne(messWin, commande);*/
     envoyer_requete(soc, req);
 }
 
