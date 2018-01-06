@@ -84,7 +84,8 @@ void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
 		info(message, client, salon);
 		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"rand")==0){
-	
+		alea(message, param);
+		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"connect")==0){
 	
 	}else{
@@ -214,7 +215,9 @@ int main(){
 	CHECK(bind(socServeur, (struct sockaddr*)&addr_serveur, sizeof(addr_serveur)), "ERREUR BIND");
 	CHECK(listen(socServeur,1),"ERREUR LISTEN")
 
+	//Innitialisation du serveur et de l'aléatoire
 	initServeur();
+	srand(time(NULL));
 	
 	while(1){
 		//On récupère la taille de l'adresse du client

@@ -75,6 +75,7 @@ void me(char *message, struct Client *client, char *param){
 		sprintf(message, "%s %s", message, temp);
 		split(temp, param);
 	}
+	strcat(message,"\n");
 }
 
 void info(char *message, struct Client *client, struct Salon *salon){
@@ -88,8 +89,26 @@ void info(char *message, struct Client *client, struct Salon *salon){
 	}
 }
 
-void alea(){
-	
+int min(int a, int b){
+	if(a<b){
+		return a;
+	}
+	return b;
+}
+
+int max(int a, int b){
+	if(a>b){
+		return a;
+	}
+	return b;
+}
+void alea(char *message, char *param){
+	char tmp[BUFF_MAX];
+	split(tmp, param);
+	int a = atoi(tmp);
+	split(tmp, param);
+	int b = atoi(tmp);
+	sprintf(message, "201\nNombre aléatoire: %d\n", (rand()% (max(a,b) - min(a,b) + 1)) + min(a,b));
 }
 
 void connection(){
