@@ -35,7 +35,6 @@ void diffusion(struct Salon *salon, char* message){
 void traiter_req0(int soc){
 	char message[BUFF_MAX];
 	sprintf(message, "0\n");
-	
 }
 
 void traiter_req100(struct Salon *salon, struct Client *client,char* texte){
@@ -46,7 +45,7 @@ void traiter_req100(struct Salon *salon, struct Client *client,char* texte){
 }
 
 //TODO effectuer les actions lors de l'envoi d'une commande
-void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
+void traiter_req101(struct Salon **salon, struct Client *client,char* texte){
 	char message[BUFF_MAX];//Message à envoyer au client
 	char commande[BUFF_MAX];//Commande entrée par le client
 	char param[BUFF_MAX];//parametres de la commende
@@ -62,15 +61,15 @@ void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
 		ping(message,0);
 		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"list")==0){
-		/*if(strcmp(salon, "Accueil")==0){
-			listeSalons(message,salon);
-		}else{*/
-			listeClients(message,salon);
-		//}
+		if(strcmp((*salon)->nom, "Accueil")==0){
+			listeSalons(message,(*salon));
+		}else{
+			listeClients(message,(*salon));
+		}
 		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"pseudo")==0){
-		if(pseudo(message, client, salon, param)){
-			diffusion(salon, message);//Changement de pseudo ok, on informe tous le monde
+		if(pseudo(message, client, (*salon), param)){
+			diffusion((*salon), message);//Changement de pseudo ok, on informe tous le monde
 		}else{
 			envoyer_reponse(client->socket, message);//Erreur lors du changement de pseudo, on informe seulement le client
 		}
@@ -79,15 +78,19 @@ void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
 		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"me")==0){
 		me(message, client, param);
-		diffusion(salon, message);
+		diffusion((*salon), message);
 	}else if(strcmp(commande,"info")==0){
-		info(message, client, salon);
+		info(message, client, (*salon));
 		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"rand")==0){
 		alea(message, param);
 		envoyer_reponse(client->socket, message);
+	}else if(strcmp(commande,"create")==0){
+		creation(message, param, salon, client);
+		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"connect")==0){
-	
+		connection(message, param, salon, client);
+		envoyer_reponse(client->socket, message);
 	}else{
 		printf("Reception d\"une commande inconnue: \"%s\"\n", commande);
 		sprintf(message, "401\n");
@@ -148,7 +151,7 @@ void* traiterClient(void* ptr){
 				traiter_req100(salon, client, param);
 			break;			
 			case 101:
-				traiter_req101(salon, client, param);
+				traiter_req101(&salon, client, param);
 			break;
 			case 0:
 				printf("Requete 0\n");

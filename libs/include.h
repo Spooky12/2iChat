@@ -60,7 +60,7 @@ void envoyer_reponse(int soc, char *req);
 void diffusion(struct Salon *salon, char* message);
 void traiter_req0(int soc);
 void traiter_req100(struct Salon *salon,struct Client *client, char* texte);
-void traiter_req101(struct Salon *salon,struct Client *client, char* texte);
+void traiter_req101(struct Salon **salon,struct Client *client, char* texte);
 void* traiterClient(void* ptr);
 
 // commandes.c
@@ -72,5 +72,5 @@ void couleur(char *message, struct Client *client, char *texte);
 void me(char *message, struct Client *client, char *texte);
 void info(char *message, struct Client *client, struct Salon *salon);
 void alea(char *message, char* param);
-void création();
-void connection();
+void creation(char *message, char *param, struct Salon **salon, struct Client *client);
+void connection(char *message, char *param, struct Salon **salon, struct Client *client);

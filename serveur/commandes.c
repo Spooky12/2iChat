@@ -32,8 +32,8 @@ int pseudo(char *message, struct Client *client, struct Salon *salon, char *text
 	char ancien[BUFF_MAX];
 	split(ps,texte);
 	if(strlen(ps)<10 && strlen(ps)>0){
-		HASH_FIND_STR( salon->clients, message, c);
-		if((strcmp(salon->nom,"Accueil")==0) || c == NULL){
+		HASH_FIND_STR( salon->clients, ps, c);
+		if(c == NULL){
 			strcpy(ancien, client->nom);
 			strcpy(client->nom,ps);
 			sprintf(message, "201\n%s s'appelle maintenant %s\n", ancien, client->nom);
@@ -111,6 +111,49 @@ void alea(char *message, char *param){
 	sprintf(message, "201\nNombre aléatoire: %d\n", (rand()% (max(a,b) - min(a,b) + 1)) + min(a,b));
 }
 
-void connection(){
-	
+void creation(char *message, char *param, struct Salon **salon, struct Client *client){
+	struct Salon *newSalon;
+	char nom[BUFF_MAX];
+	if(strcmp((*salon)->nom, "Accueil")==0){	
+		split(nom, param);
+		if(strlen(nom)<64 & strlen(nom)>0){
+			HASH_FIND_STR( (*salon), nom, newSalon);
+			if(newSalon == NULL){
+				newSalon = (struct Salon*)malloc(sizeof(struct Salon));
+				strcpy(newSalon->nom,nom);
+				strcpy(newSalon->mdp,"");
+				newSalon->clients = NULL;
+				HASH_ADD_STR( (*salon), nom, newSalon);
+				HASH_DEL( (*salon)->clients, client );
+				*salon = newSalon;
+				HASH_ADD_STR( (*salon)->clients, nom, client );
+				sprintf(message, "201\nSalon %s bien créé\n", newSalon->nom);
+			}else{
+				sprintf(message, "400\nUn salon de ce nom existe déja\n");
+			}
+		}else{
+			sprintf(message, "400\nLe nom du salon doit être compris entre 1 et 64 caracteres\n");
+		}
+	}else{
+		sprintf(message, "400\nOn ne peut créer de salon que dans l'accueil\n");
+	}
+}
+
+void connection(char *message, char *param, struct Salon **salon, struct Client *client){
+	struct Salon *s;
+	char nom[BUFF_MAX];
+	if(strcmp((*salon)->nom, "Accueil")==0){	
+		split(nom, param);
+		HASH_FIND_STR( (*salon), nom, s);
+		if(s != NULL){
+			HASH_DEL( (*salon)->clients, client );
+			*salon = s;
+			HASH_ADD_STR( (*salon)->clients, nom, client );
+			sprintf(message, "201\nVous avez rejoint le salon %s\n", nom);
+		}else{
+			sprintf(message, "400\nLe salon %s n'existe pas\nUtilisez \\create %s pour créer ce salon",nom,nom);
+		}
+	}else{
+		sprintf(message, "400\nOn ne peut rejoindre un salon que depuis l'accueil\n");
+	}
 }
