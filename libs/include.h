@@ -72,7 +72,5 @@ void couleur(char *message, struct Client *client, char *texte);
 void me(char *message, struct Client *client, char *texte);
 void info(char *message, struct Client *client, struct Salon *salon);
 void alea(char *message, char* param);
-<<<<<<< HEAD
 void creation(char *message, char *param, struct Salon **salon, struct Client *client);
 void connection(char *message, char *param, struct Salon **salon, struct Client *client);
->>>>>>> 87dd12cde602252a0849f87e2b1e8539ab9c1f71
