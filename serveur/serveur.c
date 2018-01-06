@@ -50,17 +50,9 @@ void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
 	char message[BUFF_MAX];//Message à envoyer au client
 	char commande[BUFF_MAX];//Commande entrée par le client
 	char param[BUFF_MAX];//parametres de la commende
-	//On recupere la première occurence de \n
-	char *d = strstr(texte, "\n");
-	if(d==NULL){
-		//TODO: gestion des erreurs
-	}
-	//On calcule la position du premier \n
-	int posi = d - texte;
-	//On recupere le texte de la commande
-	strncpy ( commande, texte, posi );
-	commande[posi]='\0';
-	strcpy ( param, d + 1 );
+
+	split(commande, texte);
+	strcpy(param, texte);
 	
 	printf("Commande: %s\n", commande);
 	if(strcmp(commande,"ping")==0){
@@ -86,7 +78,8 @@ void traiter_req101(struct Salon *salon, struct Client *client,char* texte){
 		couleur(message, client, param);
 		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"me")==0){
-	
+		me(message, client, param);
+		diffusion(salon, message);
 	}else if(strcmp(commande,"info")==0){
 	
 	}else if(strcmp(commande,"rand")==0){

@@ -97,6 +97,11 @@ void lire_reponse(int soc){
             afficherMessage(messWin, pseudo, texte, couleur);
             strcpy(params, "");
             break;
+		case 201:
+            sleep(0);
+            //afficherLigne(messWin, "Réponse 200\n");
+            afficherLigne(messWin, params);
+            break;
         case 300:
             afficherLigne(messWin, "Réponse 300\n");
             break;

@@ -69,7 +69,7 @@ void listeClients(char *message, struct Salon *salon);
 void listeSalons(char *message, struct Salon *salon);
 int pseudo(char *message, struct Client *client, struct Salon *salon, char *texte);
 void couleur(char *message, struct Client *client, char *texte);
-void me();
+void me(char *message, struct Client *client, char *texte);
 void info();
 void alea();
 void connection();
