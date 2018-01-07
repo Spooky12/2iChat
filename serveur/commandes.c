@@ -61,6 +61,8 @@ int pseudo(char *message, struct Client *client, struct Salon *salon, char *text
 			strcpy(ancien, client->nom);//On sav l'ancien pseudo
 			strcpy(client->nom,ps);//On modifie le pseudo de l'utilisateur
 			sprintf(message, "201\n%s s'appelle maintenant %s\n", ancien, client->nom);//On envoie une info à tout le monde
+			HASH_DEL( salon->clients, client );//On supprime le client du salon
+			HASH_ADD_STR( salon->clients, nom, client );//On ajoute le client au salon avec son nouveau pseudo
 			return 1;
 		}else{//Sinon on retourne une erreur
 			sprintf(message, "400\nUn client possède déja ce pseudo dans ce salon\n");
