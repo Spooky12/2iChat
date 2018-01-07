@@ -88,7 +88,7 @@ void couleur(char *message, struct Client *client, char *texte){
 
 	split(cou,texte);//on récupère la couleur dans le texte envoyé
 	if (strlen(cou) == 0){
-		//TODO expliquer le fonctionnement de couleur
+		sprintf(message, "201\nPour changer de couleur tapez \\color code avec code entre 1 et 8\n");
 	}else{
 		couleur = atoi(cou);//On convertit le texte en int
 		if(couleur < 9 && couleur > 0){//Si la couleur est entre 1 et 9 on la modifie

@@ -18,11 +18,10 @@ void initialiserCurses() {
 	//Lancement des couleurs
 	initialiserCouleurs();
 
-//********TODO********//
+//********TODO: affichage d'un message d'info au lancement ********//
 	drawChatWin();
 	drawInputWin();
-	/*drawInfoLines();
-	asciiSplash();*/
+	//splashScreen();
     //Mise a jour de la fenetre
 	wcursyncup(inputWin);
 	wrefresh(mainWin);
@@ -30,7 +29,7 @@ void initialiserCurses() {
 
 /**
  * @name initialiserCouleurs
- * @brief Fonction initialisant les 9 paires de couleurs
+ * @brief Fonction initialisant les 10 paires de couleurs
  */
 void initialiserCouleurs(){
 	//Lancement des couleurs
@@ -56,19 +55,19 @@ void initialiserCouleurs(){
  * @brief Fonction créant la fenetre utilisée pour afficher les messages
  */
 void drawChatWin() {
-   // Create window for chat box, draw said box 
+   // On crée la bordure de la fenetre d'affichage
    messWinBox = subwin(mainWin, (LINES * 0.8), COLS, 0, 0);
    box(messWinBox, 0, 0);
-   // Draw a slick title on it
+   // On affiche le titre de la fenetre
    mvwaddch(messWinBox, 0, (COLS * 0.5) - 6, ACS_RTEE);
    wattron(messWinBox, COLOR_PAIR(3));
    mvwaddstr(messWinBox, 0, (COLS * 0.5) - 5, " Chat 2i " );
    wattroff(messWinBox, COLOR_PAIR(3));
    mvwaddch(messWinBox, 0, (COLS * 0.5) + 4, ACS_LTEE );
    wrefresh(messWinBox);
-   // Create sub window in box to hold text
+   // On crée la fenetre d'affichage des messages
    messWin = subwin(messWinBox, (LINES * 0.8 - 2), COLS - 2, 1, 1);
-   // Enable text scrolling
+   // On active le scroll dans cette fenetre
    scrollok(messWin, TRUE);
 }
 
@@ -77,7 +76,7 @@ void drawChatWin() {
  * @brief Fonction créant la fenetre utilisée pour taper les messages
  */
 void drawInputWin() {
-   // Create input box and window
+   // Création de la fenetre d'entrée et de sa bordure
    textWin = subwin(mainWin, (LINES * 0.2) - 1, COLS, (LINES * 0.8) + 1, 0);
    box(textWin, 0, 0);
    inputWin = subwin(textWin, (LINES * 0.2) - 3, COLS - 2, (LINES * 0.8) + 2, 1);
