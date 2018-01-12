@@ -82,6 +82,14 @@ void drawInputWin() {
    inputWin = subwin(textWin, (LINES * 0.2) - 3, COLS - 2, (LINES * 0.8) + 2, 1);
 }
 
+void afficherMessageServeur(WINDOW *win, char *text) {
+    afficherMessage(win, "SERVEUR", text, 9);
+}
+
+void afficherErreur(WINDOW *win, char* erreur ,char *text) {
+    afficherMessage(win, erreur, text, 8);
+}
+
 /**
  * @name afficherMessage
  * @brief Fonction permettant d'afficher un message
