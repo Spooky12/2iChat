@@ -168,13 +168,13 @@ int max(int a, int b){
  * @param message
  * @param param
  */
-void alea(char *message, char *param){
+void alea(struct Client *client, char *message, char *param){
 	char tmp[BUFF_MAX];
 	split(tmp, param);//On récupère le premier element
 	int a = atoi(tmp);//On le convertis en int
 	split(tmp, param);//On récupère le second element
 	int b = atoi(tmp);//On le convertis en int
-	sprintf(message, "201\nNombre aléatoire: %d\n", (rand()% (max(a,b) - min(a,b) + 1)) + min(a,b));//on calcule un nombre aléatoire entre nos deux valeurs et on le renvoie
+	sprintf(message, "201\%s à tiré un nombre aléatoire entre %d et %d et à obtenu %d\n",client->nom, min(a,b), max(a,b), (rand()% (max(a,b) - min(a,b) + 1)) + min(a,b));//on calcule un nombre aléatoire entre nos deux valeurs et on le renvoie
 }
 
 /***

@@ -71,6 +71,6 @@ int pseudo(char *message, struct Client *client, struct Salon *salon, char *text
 void couleur(char *message, struct Client *client, char *texte);
 void me(char *message, struct Client *client, char *texte);
 void info(char *message, struct Client *client, struct Salon *salon);
-void alea(char *message, char* param);
+void alea(struct Client *client, char *message, char* param);
 void creation(char *message, char *param, struct Salon **salon, struct Client *client);
 void connection(char *message, char *param, struct Salon **salon, struct Client *client);
