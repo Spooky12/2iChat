@@ -44,6 +44,8 @@ void afficherLigne(WINDOW *win, char* texte);
 void afficherMessage(WINDOW *win,char* pseudo, char* texte, int couleur);
 void recupererMessage(char *message);
 void fermerCurses();
+void afficherMessageServeur(WINDOW *win, char *text);
+void afficherErreur(WINDOW *win, char* erreur, char *text);
 
 // client.c
 void *gestion_envoie(void *soc);

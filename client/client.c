@@ -123,7 +123,7 @@ void lire_reponse(int soc){
                 strcat(message, "\n");
                 strcat(message, temp);
             }
-            afficherMessage(messWin, "SERVEUR", message, 9);
+            afficherMessageServeur(messWin, message);
             break;
 		case 211: // \me
             afficherLigne(messWin, params);
@@ -135,13 +135,13 @@ void lire_reponse(int soc){
             sleep(0);
             char messErreur[BUFF_MAX];
             split(messErreur, params);
-            afficherMessage(messWin, "ERREUR 400", messErreur, 8);
+            afficherErreur(messWin, "ERREUR 400", messErreur);
             break;
         case 401: //Erreur commande
-            afficherMessage(messWin, "ERREUR 401", "Commande inconnue" , 8);
+            afficherErreur(messWin, "ERREUR 401", "Commande inconnue");
             break;
         default: //Code requete inconnu
-            afficherMessage(messWin, "REQUETTE INCONNUE", repIDc , 8);
+            afficherErreur(messWin, "REQUETTE INCONNUE", repIDc);
             break;
     }
 
