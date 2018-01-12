@@ -64,6 +64,9 @@ void split(char *dest, char *params) {
     strncpy(dest, params, pos);
     dest[pos]='\0';
     strcpy(params, d+1);
+    if(strcmp(dest, "") == 0) {
+        split(dest, params);
+    }
 }
 
 /***

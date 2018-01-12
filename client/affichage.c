@@ -82,10 +82,23 @@ void drawInputWin() {
    inputWin = subwin(textWin, (LINES * 0.2) - 3, COLS - 2, (LINES * 0.8) + 2, 1);
 }
 
+/**
+ * @name afficherMessageServeur
+ * @brief Fonction permettant d'afficher les messages serveur
+ * @param win
+ * @param text
+ */
 void afficherMessageServeur(WINDOW *win, char *text) {
     afficherMessage(win, "SERVEUR", text, 9);
 }
 
+/**
+ * @name afficherErreur
+ * @brief Fonction permettant d'afficher les erreurs
+ * @param win
+ * @param erreur
+ * @param text
+ */
 void afficherErreur(WINDOW *win, char* erreur ,char *text) {
     afficherMessage(win, erreur, text, 8);
 }
@@ -136,10 +149,19 @@ void recupererMessage(char *message) {
     {
         c = wgetch(mainWin);
         if(c==10) { //retour chariot
-            strcat(message, "\n");
-            wclear(inputWin);
-            wrefresh(inputWin);
-            return;
+            //Test pour ne pas retourner des chaines vide ou rempli seulement d'espace
+            if(strcmp(message, "")) {
+                int i=0;
+                while(message[i]==' ') {
+                    i++;
+                };
+                if(message[i]!='\0') {
+                    strcat(message, "\n");
+                    wclear(inputWin);
+                    wrefresh(inputWin);
+                    return;
+                }
+            }
         }
         if(c==263) { //backspace
             if(strlen(message)>0) {
@@ -148,9 +170,11 @@ void recupererMessage(char *message) {
                 strcpy(message, temp);
             }
         } else if(c>=32 && c<=255) { //charactere ascii etendu
-            char ch[1];
-            sprintf(ch, "%c", c);
-            strcat(message, ch);
+            if(strlen(message)<500) { //Pas de message de plus de 500 caracteres
+                char ch[1];
+                sprintf(ch, "%c", c);
+                strcat(message, ch);
+            }
         }
         wclear(inputWin);
         mvwprintw(inputWin, 0, 0, message);
