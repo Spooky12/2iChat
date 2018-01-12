@@ -52,6 +52,7 @@ void diffusion(struct Salon *salon, char* message){
 void traiter_req0(int soc){
 	char message[BUFF_MAX];
 	sprintf(message, "0\n");
+	envoyer_reponse(soc, message);
 }
 
 /**
@@ -120,6 +121,9 @@ void traiter_req101(struct Salon **salon, struct Client *client,char* texte){
 		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"connect")==0){
 		connection(message, param, salon, client);
+		envoyer_reponse(client->socket, message);
+	}else if(strcmp(commande,"leave")==0){
+		leave(message, salon, client);
 		envoyer_reponse(client->socket, message);
 	}else{
 		printf("Reception d\"une commande inconnue: \"%s\"\n", commande);

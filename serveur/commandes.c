@@ -231,7 +231,7 @@ void connection(char *message, char *param, struct Salon **salon, struct Client 
 	
 	if(strcmp((*salon)->nom, "Accueil")==0){//Il n'est possiblle de changer de salon que depuis l'accueil
 		split(nom, param);//on récupère le nom du salon
-		HASH_FIND_STR( (*salon), nom, s);//On cherche un salon ayant ce nom
+		HASH_FIND_STR( (*salon), nom, s);//On cherche un client ayant ce nom
 		if(s != NULL){//Si ce salon existe
 			HASH_FIND_STR(s->clients , client->nom , c);//On cherche un salon ayant ce nom
 			if(c == NULL){//Si il n'existe pas de client avec le même pseudo dans le salon à rejoindre
@@ -247,5 +247,36 @@ void connection(char *message, char *param, struct Salon **salon, struct Client 
 		}
 	}else{
 		sprintf(message, "400\nOn ne peut rejoindre un salon que depuis l'accueil\n");
+	}
+}
+
+/***
+ * @name leave
+ * @brief Fonction permettant de quiter le salon et de retourner sur l'accueil
+ * @param message
+ * @param salon
+ * @param client
+ */
+void leave(char *message, struct Salon **salon, struct Client *client){
+	struct Salon *s;
+	struct Client *c;
+	
+	if(strcmp((*salon)->nom, "Accueil")!=0){//Il n'est possiblle de changer de salon que depuis l'accueil
+		HASH_FIND_STR( (*salon), "Accueil", s);//On cherche l'accueil
+		if(s != NULL){//Si on trouve l'accueil
+			HASH_FIND_STR(s->clients , client->nom , c);//On cherche un client ayant ce nom
+			if(c == NULL){//Si il n'existe pas de client avec le même pseudo dans l'accueil
+				HASH_DEL( (*salon)->clients, client );//On supprime le client de l'ancien salon
+				*salon = s;//On modifie le salon du client
+				HASH_ADD_STR( (*salon)->clients, nom, client );//On ajoute le client a l'accueil
+				sprintf(message, "201\nVous avez bien quité le salon\n");//On envoie une confirmation au client
+			}else{
+				sprintf(message, "400\nUn client ayant le même pseudo que vous est déja dans l'accueil. Veuillez changer de pseudo pour quiter ce salon");
+			}
+		}else{
+			sprintf(message, "400\nErreur lors de la sortie du salon");
+		}
+	}else{
+		sprintf(message, "400\nOn ne peut pas quiter l'accueil\n");
 	}
 }

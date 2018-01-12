@@ -74,3 +74,4 @@ void info(char *message, struct Client *client, struct Salon *salon);
 void alea(struct Client *client, char *message, char* param);
 void creation(char *message, char *param, struct Salon **salon, struct Client *client);
 void connection(char *message, char *param, struct Salon **salon, struct Client *client);
+void leave(char *message, struct Salon **salon, struct Client *client);
