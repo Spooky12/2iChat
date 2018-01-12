@@ -113,8 +113,8 @@ void traiter_req101(struct Salon **salon, struct Client *client,char* texte){
 		info(message, client, (*salon));
 		envoyer_reponse(client->socket, message);
 	}else if(strcmp(commande,"rand")==0){
-		alea(message, param);
-		envoyer_reponse(client->socket, message);
+		alea(client, message, param);
+		diffusion((*salon), message);
 	}else if(strcmp(commande,"create")==0){
 		creation(message, param, salon, client);
 		envoyer_reponse(client->socket, message);
@@ -287,6 +287,7 @@ int main(){
 
 		pthread_t thread_client;
 		pthread_create(&thread_client, NULL, traiterClient, (void *)&socClient);
+		pthread_detach(thread_client);
 	}
 	//On ferme la socket serveur
 	close(socServeur);
