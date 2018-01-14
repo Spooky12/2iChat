@@ -280,3 +280,28 @@ void leave(char *message, struct Salon **salon, struct Client *client){
 		sprintf(message, "400\nOn ne peut pas quiter l'accueil\n");
 	}
 }
+
+/***
+ * @name prive
+ * @brief Fonction permettant de demander une conversation privé avec un autre client
+ * @param message
+ * @param param
+ * @param client
+ * @param salon
+ */
+void prive(char *message,char *param, struct Client *client, struct Salon *salon){
+	struct Client *c;
+	char ps[BUFF_MAX];//Pseudo de l'utilisateur à chuchoter
+
+	split(ps,param);//on récupère le pseudo dans le texte envoyé
+	if(strlen(ps)<10 && strlen(ps)>0){//Si le pseudo n'est pas nul et que sa taille est inférieure à 10
+		HASH_FIND_STR( salon->clients, ps, c);//On cherche si ce pseudo existe déja dans le serveur
+		if(c == NULL){//Si ce pseudo n'existe pas déja
+			sprintf(message, "300\n%s\n", client->nom);//On envoie une info à tout le monde
+		}else{//Sinon on retourne une erreur
+			sprintf(message, "400\nCet utilisateur n'existe pas\n\n");
+		}
+	}else{//Sinon on retourne une erreur
+		sprintf(message, "400\nCet utilisateur n'existe pas\n");
+	}
+}

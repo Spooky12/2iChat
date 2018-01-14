@@ -172,7 +172,9 @@ void recupererMessage(char *message) {
                     return;
                 }
             }
-        }
+        }else if(c == KEY_RESIZE){
+			continue;
+		}
         if(c==263) { //backspace
             if(strlen(message)>0) {
                 char temp[BUFF_MAX] = "";
