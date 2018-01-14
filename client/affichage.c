@@ -1,3 +1,13 @@
+/**
+ * @file affichage.c
+ * @brief Gestion de l'affichage.
+ * @author Corentin A. & Thomas T.
+ * @date 14 janvier 2018
+ *
+ * Ce fichier contient toutes les fonction servant à gérer l'affichage du client
+ *
+ */
+ 
 #include "../libs/include.h"
 
 extern WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;

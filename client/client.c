@@ -1,3 +1,13 @@
+/**
+ * @file client.c
+ * @brief Programme client
+ * @author Corentin A. & Thomas T.
+ * @date 14 janvier 2018
+ *
+ * Programme principal du client
+ *
+ */
+ 
 #include "../libs/include.h"
 
 WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;

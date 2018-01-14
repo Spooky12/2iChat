@@ -1,4 +1,13 @@
-#include "../libs/include.h"
+/**
+ * @file commandes.c
+ * @brief Gestion de des commandes.
+ * @author Corentin A. & Thomas T.
+ * @date 14 janvier 2018
+ *
+ * Ce fichier contient toutes les fonctions gérant les commandes qu'un client peut envoyer au serveur.
+ *
+ */
+ #include "../libs/include.h"
 
 /***
  * @name ping
