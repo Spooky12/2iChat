@@ -1,5 +1,5 @@
 /**
- * @file affichage.c
+ * @file client/affichage.c
  * @brief Gestion de l'affichage.
  * @author Corentin A. & Thomas T.
  * @date 14 janvier 2018

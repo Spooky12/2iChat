@@ -5,3 +5,4 @@ client/client
 client/affichage.o
 serveur/affichage.o
 serveur/commandes.o
+doc/*
