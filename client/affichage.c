@@ -7,7 +7,6 @@
  * Ce fichier contient toutes les fonction servant à gérer l'affichage du client
  *
  */
- 
 #include "../libs/include.h"
 
 extern WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;

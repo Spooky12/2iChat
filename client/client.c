@@ -7,7 +7,6 @@
  * Programme principal du client
  *
  */
- 
 #include "../libs/include.h"
 
 WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;
@@ -28,7 +27,7 @@ void deroute (int signal_number)
     }
 }
 
-/***
+/**
  * @name gestion_envoie
  * @brief boucle permettant de s'occuper de du traitement et de l'envoie au serveur des inputs du client
  * @param soc
@@ -56,7 +55,7 @@ void* gestion_envoie(void *soc) {
     pthread_exit(0);
 }
 
-/***
+/**
  * @name gestion_lecture
  * @brief boucle permettant de s'occuper de la reception et du traitement des requetes du serveur
  * @param soc
@@ -68,7 +67,7 @@ void* gestion_lecture(void *soc) {
     }
 }
 
-/***
+/**
  * @name split
  * @brief Fonction qui permet de déplacer params dans dest jusqu'au premier \n
  * @param dest
@@ -95,7 +94,7 @@ void split(char *dest, char *params) {
     }
 }
 
-/***
+/**
  * @name lire_reponse
  * @brief fonction permettant de s'occuper de la reception et du traitement des requetes du serveur
  * @param soc
@@ -224,6 +223,10 @@ void envoyer_requete(int soc, char *req){
     CHECK(write(soc, req, strlen(req)+1), "ERREUR WRITE");
 }
 
+/**
+ * @name main
+ * @brief Fonction principale du client
+ */
 int main(){
     quitter=0;
     //Handler pour dérouter les signaux

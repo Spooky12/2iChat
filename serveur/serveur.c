@@ -7,7 +7,7 @@
  * Programme principal du serveur
  *
  */
- #include "../libs/include.h"
+#include "../libs/include.h"
 
 struct Salon *salons = NULL;
 
@@ -153,7 +153,7 @@ void envoyer_reponse(int soc, char *req){
 }
 
 /**
- * @name envoyer_reponse
+ * @name initServeur
  * @brief Fonction permettant d'initialiser le serveur et le salon d'accueil
  */
 void initServeur(){
@@ -229,7 +229,7 @@ void* traiterClient(void* ptr){
 	return NULL;
 }
 
-/***
+/**
  * @name split
  * @brief Fonction qui permet de déplacer params dans dest jusqu'au premier \n
  * @param dest
