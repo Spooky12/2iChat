@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -37,6 +38,7 @@ struct Salon {
 
 // affichage.c
 void initialiserCurses();
+void resizeTerminal();
 void initialiserCouleurs();
 void drawChatWin();
 void drawInputWin();
@@ -48,6 +50,7 @@ void afficherMessageServeur(WINDOW *win, char *text);
 void afficherErreur(WINDOW *win, char* erreur, char *text);
 
 // client.c
+void deroute(int signal_number);
 void *gestion_envoie(void *soc);
 void *gestion_lecture(void *soc);
 void split(char *dest, char *params);

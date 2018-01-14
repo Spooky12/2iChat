@@ -1,6 +1,7 @@
 #include "../libs/include.h"
 
 extern WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;
+extern int quitter;
 
 /**
  * @name initialiserCurses
@@ -25,6 +26,15 @@ void initialiserCurses() {
     //Mise a jour de la fenetre
 	wcursyncup(inputWin);
 	wrefresh(mainWin);
+}
+
+void resizeTerminal() {
+    endwin();
+    // Needs to be called after an endwin() so ncurses will initialize
+    // itself with the new terminal dimensions.
+    refresh();
+    clear();
+    initialiserCurses();
 }
 
 /**
@@ -145,7 +155,7 @@ void afficherLigne(WINDOW *win, char* texte){
  */
 void recupererMessage(char *message) {
     int c;
-    while(1)
+    while(!quitter)
     {
         c = wgetch(mainWin);
         if(c==10) { //retour chariot

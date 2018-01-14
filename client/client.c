@@ -1,6 +1,17 @@
 #include "../libs/include.h"
 
 WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;
+int quitter;
+
+void deroute (int signal_number)
+{
+    switch (signal_number) {
+        case SIGINT : quitter =1;
+            break;
+        case SIGWINCH : resizeTerminal();
+            break;
+    }
+}
 
 /***
  * @name gestion_envoie
@@ -13,7 +24,7 @@ void* gestion_envoie(void *soc) {
 	char message[BUFF_MAX]="";
 
     recupererMessage(message);
-    while(strcmp(message,"\\exit\n")!=0){
+    while(strcmp(message,"\\exit\n")!=0 && !quitter){
         if(message[0] == '\\') {
             envoyer_commande(sock, req, message);
         } else {
@@ -199,6 +210,17 @@ void envoyer_requete(int soc, char *req){
 }
 
 int main(){
+    quitter=0;
+    //Handler pour dérouter les signaux
+    struct sigaction newact;
+    int sts;
+    void deroute();
+    newact.sa_handler = deroute;
+    CHECK(sigemptyset(&newact.sa_mask),"problème sigemptyset");
+    newact.sa_flags = 0;
+    CHECK(sigaction(SIGINT, &newact, NULL),"problème sigaction SIGINT");
+    CHECK(sigaction(SIGWINCH, &newact, NULL),"problème sigaction SIGWINCH");
+
 	//Lancement de l'interface graphique
 	initialiserCurses();
 	
