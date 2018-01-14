@@ -3,6 +3,11 @@
 WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;
 int quitter;
 
+/**
+ * @name deroute
+ * @brief fonction permettant de gerer les signaux dérouté et de faire le traitement associé
+ * @param signal_number
+ */
 void deroute (int signal_number)
 {
     switch (signal_number) {
