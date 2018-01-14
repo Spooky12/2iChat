@@ -15,7 +15,7 @@ gcc affichage.o client.c -lpthread -lncurses -o client
 ```
 
 #### Commandes
-Des commandes spécifiques peuvent être utilisées pour certaines tâches. Elles commencent toutes par le caractère `/` et peuvent nécessiter un paramètre.
+Des commandes spécifiques peuvent être utilisées pour certaines tâches. Elles commencent toutes par le caractère `\` et peuvent nécessiter un paramètre.
 Les paramètres requis sont désignés par `<` et `>`.
 Les paramètres optionels sont désignés par `[` et `]`.
 ##### Liste des commandes 
