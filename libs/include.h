@@ -38,7 +38,7 @@ struct Salon {
 
 // affichage.c
 void initialiserCurses();
-void resizeTerminal();
+void reloadTerminal();
 void initialiserCouleurs();
 void drawChatWin();
 void drawInputWin();

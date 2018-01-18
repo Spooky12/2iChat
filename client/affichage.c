@@ -38,15 +38,21 @@ void initialiserCurses() {
 }
 
 /**
- * @name resizeTerminal
- * @brief Fonction permettant de redimensionner la fenetre
+ * @name reloadTerminal
+ * @brief Fonction permettant de recharger la fenetre
  */
-void resizeTerminal() {
-    endwin();
+ void reloadTerminal(){
+	endwin();
     refresh();
     clear();
-    initialiserCurses();
-}
+    
+	drawChatWin();
+	drawInputWin();
+	
+	wrefresh(messWin);
+	wcursyncup(inputWin);
+	wrefresh(mainWin);
+ }
 
 /**
  * @name initialiserCouleurs

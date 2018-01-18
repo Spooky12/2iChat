@@ -22,7 +22,7 @@ void deroute (int signal_number)
     switch (signal_number) {
         case SIGINT : quitter =1;
             break;
-        case SIGWINCH : resizeTerminal();
+        case SIGWINCH : reloadTerminal();
             break;
     }
 }
