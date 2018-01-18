@@ -213,7 +213,7 @@ void creation(char *message, char *param, struct Salon **salon, struct Client *c
 				HASH_DEL( (*salon)->clients, client );//On supprime le client de l'ancien salon
 				*salon = newSalon;//On modifie le salon du client
 				HASH_ADD_STR( (*salon)->clients, nom, client );//On ajoute le client au nouveau salon
-				sprintf(message, "201\nSalon %s bien créé\n", newSalon->nom);//On envoie une confirmation au client
+				sprintf(message, "203\n%s\n", newSalon->nom);//On envoie une confirmation au client
 			}else{
 				sprintf(message, "400\nUn salon de ce nom existe déja\n");
 			}
@@ -247,7 +247,7 @@ void connection(char *message, char *param, struct Salon **salon, struct Client 
 				HASH_DEL( (*salon)->clients, client );//On supprime le client de l'ancien salon
 				*salon = s;//On modifie le salon du client
 				HASH_ADD_STR( (*salon)->clients, nom, client );//On ajoute le client au nouveau salon
-				sprintf(message, "201\nVous avez rejoint le salon %s\n", nom);//On envoie une confirmation au client
+				sprintf(message, "202\n%s\n", nom);//On envoie une confirmation au client
 			}else{
 				sprintf(message, "400\nUn client ayant le même pseudo que vous est déja dans le salon %s. Veuillez changer de pseudo pour rejoindre ce salon",nom);
 			}
