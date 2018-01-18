@@ -7,10 +7,13 @@
  * Programme principal du client
  *
  */
+#include <curses.h>
 #include "../libs/include.h"
 
 WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;
 int quitter;
+
+void entreeSalon(WINDOW *win, char *nomSalon, int creationSalon);
 
 /**
  * @name deroute
@@ -132,7 +135,7 @@ void lire_reponse(int soc){
             pthread_exit(0);
             break;
         case 200: //Message
-            sleep(0);
+        {
             char pseudo[BUFF_MAX], cCouleur[BUFF_MAX], texte[BUFF_MAX];
             split(pseudo, params);
             split(cCouleur, params);
@@ -140,8 +143,9 @@ void lire_reponse(int soc){
             split(texte, params);
             afficherMessage(messWin, pseudo, texte, couleur);
             break;
+        }
 		case 201: // message serveur
-            sleep(0);
+        {
             char message[BUFF_MAX]="";
             char temp[BUFF_MAX]="";
             split(temp, params);
@@ -153,6 +157,26 @@ void lire_reponse(int soc){
             }
             afficherMessageServeur(messWin, message);
             break;
+        }
+        case 202: //join salon (nom salon)
+        {
+            char nomSalon[BUFF_MAX];
+            split(nomSalon, params);
+            entreeSalon(messWin, nomSalon, 0);
+            break;
+        }
+        case 203: //creation salon (nom salon)
+        {
+            char nomSalon2[BUFF_MAX];
+            split(nomSalon2, params);
+            entreeSalon(messWin, nomSalon2, 1);
+            break;
+        }
+        case 204: //creation salon (nom salon)
+        {
+            sortieSalon(messWin);
+            break;
+        }
 		case 211: // \me
             afficherLigne(messWin, params);
             break;
@@ -160,11 +184,12 @@ void lire_reponse(int soc){
             afficherLigne(messWin, "Réponse 300\n");
             break;
         case 400: //Erreur
-            sleep(0);
+        {
             char messErreur[BUFF_MAX];
             split(messErreur, params);
             afficherErreur(messWin, "ERREUR 400", messErreur);
             break;
+        }
         case 401: //Erreur commande
             afficherErreur(messWin, "ERREUR 401", "Commande inconnue");
             break;
@@ -257,7 +282,7 @@ int main(){
 
     //Connection au serveur
     CHECK(connect(socClient,(struct sockaddr*)&addr_serveur, sizeof(addr_serveur)), "ERREUR CONNECT")
-
+    changerTitre("Acceuil");
     pthread_t threads[2];
 
     CHECK(pthread_create(&threads[0], NULL, gestion_envoie, (void *) &socClient ), "ERREUR création thread envoie")

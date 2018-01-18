@@ -7,10 +7,13 @@
  * Ce fichier contient toutes les fonction servant à gérer l'affichage du client
  *
  */
+#include <curses.h>
 #include "../libs/include.h"
 
 extern WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;
 extern int quitter;
+
+char titreFenetre[BUFF_MAX] = "CHAT 2i";
 
 /**
  * @name initialiserCurses
@@ -45,7 +48,7 @@ void resizeTerminal() {
     endwin();
     refresh();
     clear();
-    initialiserCurses();
+    initialiserCurses("CHAT 2i2");
 }
 
 /**
@@ -76,15 +79,19 @@ void initialiserCouleurs(){
  * @brief Fonction créant la fenetre utilisée pour afficher les messages
  */
 void drawChatWin() {
+    char titre[BUFF_MAX] = " ";
+    strcat(titre, titreFenetre);
+    strcat(titre, " ");
    // On crée la bordure de la fenetre d'affichage
    messWinBox = subwin(mainWin, (LINES * 0.8), COLS, 0, 0);
    box(messWinBox, 0, 0);
+    int impaire = strlen(titre) % 2;
    // On affiche le titre de la fenetre
-   mvwaddch(messWinBox, 0, (COLS * 0.5) - 6, ACS_RTEE);
+   mvwaddch(messWinBox, 0, (COLS * 0.5) - strlen(titre)/2 -1 - impaire, ACS_RTEE);
    wattron(messWinBox, COLOR_PAIR(3));
-   mvwaddstr(messWinBox, 0, (COLS * 0.5) - 5, " Chat 2i " );
+   mvwaddstr(messWinBox, 0, (COLS * 0.5) - strlen(titre)/2 - impaire, titre );
    wattroff(messWinBox, COLOR_PAIR(3));
-   mvwaddch(messWinBox, 0, (COLS * 0.5) + 4, ACS_LTEE );
+   mvwaddch(messWinBox, 0, (COLS * 0.5) + strlen(titre)/2, ACS_LTEE );
    wrefresh(messWinBox);
    // On crée la fenetre d'affichage des messages
    messWin = subwin(messWinBox, (LINES * 0.8 - 2), COLS - 2, 1, 1);
@@ -101,6 +108,32 @@ void drawInputWin() {
    textWin = subwin(mainWin, (LINES * 0.2) - 1, COLS, (LINES * 0.8) + 1, 0);
    box(textWin, 0, 0);
    inputWin = subwin(textWin, (LINES * 0.2) - 3, COLS - 2, (LINES * 0.8) + 2, 1);
+}
+
+void changerTitre(char *nouveauTitre) {
+    endwin();
+    refresh();
+    clear();
+    strcpy(titreFenetre, nouveauTitre);
+    initialiserCurses();
+    wrefresh(mainWin);
+}
+
+void sortieSalon(WINDOW *win) {
+    changerTitre("Accueil");
+    afficherMessageServeur(win, "Vous avez bien quitté le salon");
+}
+
+void entreeSalon(WINDOW *win, char *nomSalon, int creationSalon) {
+    changerTitre(nomSalon);
+    char message[BUFF_MAX] = "Le salon ";
+    strcat(message, nomSalon);
+    if(creationSalon) {
+        strcat(message, " a bien été crée !");
+    } else {
+        strcat(message, " a bien été rejoint !");
+    }
+    afficherMessageServeur(win, message);
 }
 
 /**
