@@ -24,7 +24,7 @@ Les paramètres optionels sont désignés par `[` et `]`.
 * `\create <nomSalon>` Depuis l'accueil, permet de créer un nouveau salon `nomSalon`
 * `\exit` Permet de fermer le programme
 * `\pseudo <pseudo>` Permet de changer de pseudo
-* `\couleur <nombre>` Permet de changer la couleur de ses messages, `nombre` doit être compris entre 1 et 8
+* `\couleur <nombre>` Permet de changer la couleur de ses messages, `nombre` doit être compris entre 1 et 7
 * `\info` Donne des informations sur le salon dans lequel l'utilisateur se trouve
 * `\list` Dans l'accueil, affiche la liste des salons. Dans un salon, affiche la liste des utilisateurs conencté sur le salon
 * `\ping` Le serveur répond pong 

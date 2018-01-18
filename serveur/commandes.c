@@ -107,7 +107,7 @@ void couleur(char *message, struct Client *client, char *texte){
 7:vert\n");
 	}else{
 		couleur = atoi(cou);//On convertit le texte en int
-		if(couleur < 9 && couleur > 0){//Si la couleur est entre 1 et 9 on la modifie
+		if(couleur < 8 && couleur > 0){//Si la couleur est entre 1 et 7 on la modifie
 			client->couleur = couleur;
 			sprintf(message, "201\nCouleur bien changée\n");
 		}else{//Sinon, on renvoie une erreur
