@@ -134,6 +134,9 @@ void traiter_req101(struct Salon **salon, struct Client *client,char* texte){
 	}else if(strcmp(commande,"leave")==0){
 		leave(message, salon, client);
 		envoyer_reponse(client->socket, message);
+	}else if(strcmp(commande,"prive")==0){
+		prive(message, param, client, (*salon));
+		envoyer_reponse(client->socket, message);
 	}else{
 		printf("Reception d\"une commande inconnue: \"%s\"\n", commande);
 		sprintf(message, "401\n");

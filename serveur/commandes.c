@@ -97,11 +97,18 @@ void couleur(char *message, struct Client *client, char *texte){
 
 	split(cou,texte);//on récupère la couleur dans le texte envoyé
 	if (strlen(cou) == 0){
-		sprintf(message, "201\nPour changer de couleur tapez \\color code avec code entre 1 et 8\n");
+		sprintf(message, "201\nPour changer de couleur tapez \\couleur code avec code entre 1 et 7\n\
+1:couleur par défaut du terminal\n\
+2:cyan\n\
+3:jaune\n\
+4:rouge\n\
+5:bleu\n\
+6:magenta\n\
+7:vert\n");
 	}else{
 		couleur = atoi(cou);//On convertit le texte en int
 		if(couleur < 9 && couleur > 0){//Si la couleur est entre 1 et 9 on la modifie
-			client->couleur = couleur-1;
+			client->couleur = couleur;
 			sprintf(message, "201\nCouleur bien changée\n");
 		}else{//Sinon, on renvoie une erreur
 			sprintf(message, "400\nErreur lors du changement de couleur\n");
@@ -278,7 +285,7 @@ void leave(char *message, struct Salon **salon, struct Client *client){
 				HASH_DEL( (*salon)->clients, client );//On supprime le client de l'ancien salon
 				*salon = s;//On modifie le salon du client
 				HASH_ADD_STR( (*salon)->clients, nom, client );//On ajoute le client a l'accueil
-				sprintf(message, "201\nVous avez bien quité le salon\n");//On envoie une confirmation au client
+				sprintf(message, "204\n");//On envoie une confirmation au client
 			}else{
 				sprintf(message, "400\nUn client ayant le même pseudo que vous est déja dans l'accueil. Veuillez changer de pseudo pour quiter ce salon");
 			}

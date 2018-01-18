@@ -48,6 +48,7 @@ void recupererMessage(char *message);
 void fermerCurses();
 void afficherMessageServeur(WINDOW *win, char *text);
 void afficherErreur(WINDOW *win, char* erreur, char *text);
+void help();
 
 // client.c
 void deroute(int signal_number);
