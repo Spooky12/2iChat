@@ -42,7 +42,9 @@ void* gestion_envoie(void *soc) {
 
     recupererMessage(message);
     while(strcmp(message,"\\exit\n")!=0 && !quitter){
-        if(message[0] == '\\') {
+        if(strcmp(message, "\\help\n")==0){
+			help();
+		}else if(message[0] == '\\') {
             envoyer_commande(sock, req, message);
         } else {
             envoyer_message(sock, req, message);

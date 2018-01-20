@@ -338,10 +338,16 @@ void prive(char *message,char *param, struct Client *client, struct Salon *salon
 		dem_lecture();
 		HASH_FIND_STR( salon->clients, ps, c);//On cherche si ce pseudo existe déja dans le serveur
 		rendre();
-		if(c == NULL){//Si ce pseudo n'existe pas déja
-			sprintf(message, "300\n%s\n", client->nom);//On envoie une info à tout le monde
+		if(c != NULL){//Si ce pseudo n'existe pas déja
+			if(strcmp(c->nom, client->nom)!=0){//Si on essaye pas de lancer une conversation privée avec soit même
+				sprintf(message, "300\n%s\n", client->nom);//On envoie une demande de conversation privée
+				envoyer_reponse(c->socket, message);
+				sprintf(message, "201\nDemande de conversation privée avec %s bien envoyée\n", c->nom);//On envoie une confirmation de la demande de conversation privée
+			}else{
+				sprintf(message, "400\nVous ne pouvez pas lancer de conversation privée seul\n");
+			}
 		}else{//Sinon on retourne une erreur
-			sprintf(message, "400\nCet utilisateur n'existe pas\n\n");
+			sprintf(message, "400\nCet utilisateur n'existe pas\n");
 		}
 	}else{//Sinon on retourne une erreur
 		sprintf(message, "400\nCet utilisateur n'existe pas\n");

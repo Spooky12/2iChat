@@ -251,19 +251,20 @@ void recupererMessage(char *message) {
  */
 void help(){
 	char str[BUFF_MAX] = "Bienvenue dans 2iChat\n";
-	strcpy(str, "Lors de la connection, vous accédez directement a l'accueil\n");
-	strcpy(str, "Commandes disponibles:\n");
-	strcpy(str, "\\ping renvoie un pong pour tester la connectivité\n");
-	strcpy(str, "\\list affiche la liste des serveurs sur l'accueil ou la liste des utilisateurs sur le salon\n");
-	strcpy(str, "\\pseudo NEW_PSEUDO vous permet de changer de pseudo\n");
-	strcpy(str, "\\couleur ID_COULEUR vous permet de choisir la couleur de vos messages\n");
-	strcpy(str, "\\me MESSAGE permet d'afficher un message sous la forme \"pseudo message\" sans le \":\"\n");
-	strcpy(str, "\\rand 0 10 renvoie un nombre aléatoire entre 0 et 10\n");
-	strcpy(str, "\\create NOM_SALON permet de créer un nouveau salon\n");
-	strcpy(str, "\\connect NOM_SALON permet de rrejoindre un salon existant\n");
-	strcpy(str, "\\leave permet de quiter un salon pour rejoindre l'accueil\n");
-	strcpy(str, "\\prive USER permet de lancer une conversation privée avec un utilisateur\n");
-	afficherMessageServeur(textWin, str);
+	strcat(str, "Lors de la connection, vous accédez directement a l'accueil\n");
+	strcat(str, "Commandes disponibles:\n");
+	strcat(str, "\\ping renvoie un pong pour tester la connectivité\n");
+	strcat(str, "\\list affiche la liste des serveurs sur l'accueil ou la liste des utilisateurs sur le salon\n");
+	strcat(str, "\\pseudo NEW_PSEUDO vous permet de changer de pseudo\n");
+	strcat(str, "\\couleur ID_COULEUR vous permet de choisir la couleur de vos messages\n");
+	strcat(str, "\\me MESSAGE permet d'afficher un message sous la forme \"pseudo message\" sans le \":\"\n");
+	strcat(str, "\\rand 0 10 renvoie un nombre aléatoire entre 0 et 10\n");
+	strcat(str, "\\create NOM_SALON permet de créer un nouveau salon\n");
+	strcat(str, "\\connect NOM_SALON permet de rejoindre un salon existant\n");
+	strcat(str, "\\leave permet de quitter un salon pour rejoindre l'accueil\n");
+	strcat(str, "\\prive USER permet de lancer une conversation privée avec un utilisateur\n");
+	strcat(str, "\\exit permet de quitter le programme\n");
+	afficherMessageServeur(messWin, str);
 }
 
 /**
