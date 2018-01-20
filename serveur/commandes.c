@@ -9,6 +9,8 @@
  */
 #include "../libs/include.h"
 
+extern pthread_rwlock_t lock;
+
 /**
  * @name ping
  * @brief Fonction permettant de répondre pong à un ping et ping à un pong
@@ -65,13 +67,17 @@ int pseudo(char *message, struct Client *client, struct Salon *salon, char *text
 	char ancien[BUFF_MAX];//ancien pseudo
 	split(ps,texte);//on récupère le pseudo dans le texte envoyé
 	if(strlen(ps)<10 && strlen(ps)>0){//Si le pseudo n'est pas nul et que sa taille est inférieure à 10
+		dem_lecture();
 		HASH_FIND_STR( salon->clients, ps, c);//On cherche si ce pseudo existe déja dans le serveur
+		rendre();
 		if(c == NULL){//Si ce pseudo n'existe pas déja
 			strcpy(ancien, client->nom);//On sav l'ancien pseudo
 			strcpy(client->nom,ps);//On modifie le pseudo de l'utilisateur
 			sprintf(message, "201\n%s s'appelle maintenant %s\n", ancien, client->nom);//On envoie une info à tout le monde
+			dem_ecriture();
 			HASH_DEL( salon->clients, client );//On supprime le client du salon
 			HASH_ADD_STR( salon->clients, nom, client );//On ajoute le client au salon avec son nouveau pseudo
+			rendre();
 			return 1;
 		}else{//Sinon on retourne une erreur
 			sprintf(message, "400\nUn client possède déja ce pseudo dans ce salon\n");
@@ -144,7 +150,9 @@ void me(char *message, struct Client *client, char *param){
 void info(char *message, struct Client *client, struct Salon *salon){
 	sprintf(message, "201\nBonjour %s", client->nom);//On affiche le nom du client
 	sprintf(message, "%s\nVous êtes sur le salon %s", message, salon->nom);//Puis le nom du serveur
+	dem_lecture();
 	int nb = HASH_COUNT(salon->clients);//On récupère le nombre de clients connectés sur le serveur
+	rendre();
 	if(nb==1){//On affiche le singulier ou le pluriel
 		sprintf(message, "%s\n%d personne est actuellement sur ce salon", message, nb);
 	}else{	
@@ -208,7 +216,9 @@ void creation(char *message, char *param, struct Salon **salon, struct Client *c
 	if(strcmp((*salon)->nom, "Accueil")==0){//On ne peux créer de salon que depuis l'accueil
 		split(nom, param);//on récupère le nom du salon
 		if(strlen(nom)<64 & strlen(nom)>0){//Si la longueur du nom est inférieure à 64 et non nulle
+			dem_lecture();
 			HASH_FIND_STR( (*salon), nom, newSalon);//On cherche un salon ayant ce nom
+			rendre();
 			if(newSalon == NULL){//Si il n'existe pas de salon ayant ce nom
 				newSalon = (struct Salon*)malloc(sizeof(struct Salon));//On crée un nouveau salon
 				//On lui attribue son nom, mot de passe et liste de clients
@@ -216,10 +226,12 @@ void creation(char *message, char *param, struct Salon **salon, struct Client *c
 				strcpy(newSalon->mdp,"");
 				newSalon->clients = NULL;
 				
+				dem_ecriture();
 				HASH_ADD_STR( (*salon), nom, newSalon);//On ajoute le salon à la liste des salons existants
 				HASH_DEL( (*salon)->clients, client );//On supprime le client de l'ancien salon
 				*salon = newSalon;//On modifie le salon du client
 				HASH_ADD_STR( (*salon)->clients, nom, client );//On ajoute le client au nouveau salon
+				rendre();
 				sprintf(message, "203\n%s\n", newSalon->nom);//On envoie une confirmation au client
 			}else{
 				sprintf(message, "400\nUn salon de ce nom existe déja\n");
@@ -247,13 +259,19 @@ void connection(char *message, char *param, struct Salon **salon, struct Client 
 	
 	if(strcmp((*salon)->nom, "Accueil")==0){//Il n'est possiblle de changer de salon que depuis l'accueil
 		split(nom, param);//on récupère le nom du salon
+		dem_lecture();
 		HASH_FIND_STR( (*salon), nom, s);//On cherche un client ayant ce nom
+		rendre();
 		if(s != NULL){//Si ce salon existe
+			dem_lecture();
 			HASH_FIND_STR(s->clients , client->nom , c);//On cherche un salon ayant ce nom
+			rendre();
 			if(c == NULL){//Si il n'existe pas de client avec le même pseudo dans le salon à rejoindre
+				dem_ecriture();
 				HASH_DEL( (*salon)->clients, client );//On supprime le client de l'ancien salon
 				*salon = s;//On modifie le salon du client
 				HASH_ADD_STR( (*salon)->clients, nom, client );//On ajoute le client au nouveau salon
+				rendre();
 				sprintf(message, "202\n%s\n", nom);//On envoie une confirmation au client
 			}else{
 				sprintf(message, "400\nUn client ayant le même pseudo que vous est déja dans le salon %s. Veuillez changer de pseudo pour rejoindre ce salon",nom);
@@ -278,13 +296,19 @@ void leave(char *message, struct Salon **salon, struct Client *client){
 	struct Client *c;
 	
 	if(strcmp((*salon)->nom, "Accueil")!=0){//Il n'est possiblle de changer de salon que depuis l'accueil
+		dem_lecture();
 		HASH_FIND_STR( (*salon), "Accueil", s);//On cherche l'accueil
+		rendre();
 		if(s != NULL){//Si on trouve l'accueil
+			dem_lecture();
 			HASH_FIND_STR(s->clients , client->nom , c);//On cherche un client ayant ce nom
+			rendre();
 			if(c == NULL){//Si il n'existe pas de client avec le même pseudo dans l'accueil
+				dem_ecriture();
 				HASH_DEL( (*salon)->clients, client );//On supprime le client de l'ancien salon
 				*salon = s;//On modifie le salon du client
 				HASH_ADD_STR( (*salon)->clients, nom, client );//On ajoute le client a l'accueil
+				rendre();
 				sprintf(message, "204\n");//On envoie une confirmation au client
 			}else{
 				sprintf(message, "400\nUn client ayant le même pseudo que vous est déja dans l'accueil. Veuillez changer de pseudo pour quiter ce salon");
@@ -311,7 +335,9 @@ void prive(char *message,char *param, struct Client *client, struct Salon *salon
 
 	split(ps,param);//on récupère le pseudo dans le texte envoyé
 	if(strlen(ps)<10 && strlen(ps)>0){//Si le pseudo n'est pas nul et que sa taille est inférieure à 10
+		dem_lecture();
 		HASH_FIND_STR( salon->clients, ps, c);//On cherche si ce pseudo existe déja dans le serveur
+		rendre();
 		if(c == NULL){//Si ce pseudo n'existe pas déja
 			sprintf(message, "300\n%s\n", client->nom);//On envoie une info à tout le monde
 		}else{//Sinon on retourne une erreur

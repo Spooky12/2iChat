@@ -71,6 +71,9 @@ void traiter_req0(int soc);
 void traiter_req100(struct Salon *salon,struct Client *client, char* texte);
 void traiter_req101(struct Salon **salon,struct Client *client, char* texte);
 void* traiterClient(void* ptr);
+void dem_lecture();
+void dem_ecriture();
+void rendre();
 
 // commandes.c
 void ping(char * message, int ping);

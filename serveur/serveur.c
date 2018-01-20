@@ -10,6 +10,7 @@
 #include "../libs/include.h"
 
 struct Salon *salons = NULL;
+pthread_rwlock_t lock;
 
 /**
  * @name lire_requete
@@ -160,13 +161,16 @@ void envoyer_reponse(int soc, char *req){
  * @brief Fonction permettant d'initialiser le serveur et le salon d'accueil
  */
 void initServeur(){
+	CHECK(pthread_rwlock_init(&lock,NULL),"Erreur init rwlock")
 	struct Salon *salon = NULL;
 	//Création du salon d'accueil
 	salon = (struct Salon*)malloc(sizeof(struct Salon));
 	strcpy(salon->nom,"Accueil");
 	strcpy(salon->mdp,"");
 	salon->clients = NULL;
+	dem_ecriture();
 	HASH_ADD_STR( salons, nom, salon);
+	rendre();
 }
 
 /**
@@ -186,14 +190,20 @@ void* traiterClient(void* ptr){
 	client->couleur=0;
 	//Ajout du client au salon de base
 	struct Salon *salon;
+	dem_lecture();
 	HASH_FIND_STR( salons, "Accueil", salon);
+	rendre();
 	if(salon!= NULL){
+		dem_ecriture();
 		HASH_ADD_STR( salon->clients, nom, client );
+		rendre();
 	}
 	printf("Le client %s est arrivé sur le chan\n", client->nom);
 	
 	unsigned int num_users;
+	dem_lecture();
 	num_users = HASH_COUNT(salon->clients);
+	rendre();
 	printf("Il y a %u utilisateurs sur le chan\n", num_users);
 	
 	//Booléen de fin
@@ -226,7 +236,9 @@ void* traiterClient(void* ptr){
 		}
 	}
 	//on retire le client du salon
+	dem_ecriture();
 	HASH_DEL( salon->clients, client );
+	rendre();
 	//On ferme la socket client
 	close(socClient);
 	return NULL;
@@ -257,6 +269,31 @@ void split(char *dest, char *params) {
     if(strcmp(dest, "") == 0) {
         split(dest, params);
     }
+}
+
+/**
+ * @name dem_lecture
+ * @brief Fonction qui permet de demander l'autorisation de lire dans les hash
+ */
+void dem_lecture() {
+	CHECK(pthread_rwlock_rdlock(&lock),"Erreur get rdlock")
+}
+
+/**
+ * @name dem_ecriture
+ * @brief Fonction qui permet de demander l'autorisation d'écrire dans les hash
+ */
+void dem_ecriture() {
+	CHECK(pthread_rwlock_wrlock(&lock),"Erreur get wrlock")
+}
+
+
+/**
+ * @name rendre
+ * @brief Fonction qui permet de rendre le rwlock
+ */
+void rendre() {
+	pthread_rwlock_unlock(&lock);
 }
 
 /**
