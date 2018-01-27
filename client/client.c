@@ -11,7 +11,8 @@
 #include "../libs/include.h"
 
 WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;
-int quitter,demPrive ,pm;
+int quitter, socPm;
+char pseudoPm[BUFF_MAX];
 
 void entreeSalon(WINDOW *win, char *nomSalon, int creationSalon);
 
@@ -42,29 +43,45 @@ void* gestion_envoie(void *soc) {
 
     recupererMessage(message);
     while(strcmp(message,"\\exit\n")!=0 && !quitter){
-        if(strcmp(message, "\\help\n")==0){
-			help();
-		}else if(strcmp(message,"\\accept\n") && demPrive==1) {
-            startPrive(sock, req);
-        } else if(message[0] == '\\') {
-            if(demPrive==1) { //refus de la discussion privé
-                demPrive=0;
-                sprintf(req,"%i\n",302);
-                envoyer_requete(sock, req);
+        if(socPm != -1){
+            if(strcmp(message, "\\leave\n")==0){
+                sprintf(req,"%i\n",1);
+                envoyer_requete(socPm, req);
+                socPm=-1;
+                strcmp(pseudoPm, "");
+            }else {
+                envoyer_messagePrive(req, message);
             }
-            envoyer_commande(sock, req, message);
         } else {
-            if(demPrive==1) { //refus de la discussion privé
-                demPrive=0;
-                sprintf(req,"%i\n",302);
-                envoyer_requete(sock, req);
+            if(strcmp(message, "\\help\n")==0){
+                help();
+            }else if(strcmp(message,"\\accept\n")==0 && strcmp(pseudoPm, "") != 0) {
+                startPrive(sock, req);
+            } else if(message[0] == '\\') {
+                if(strcmp(pseudoPm, "") != 0) { //refus de la discussion privé
+                    strcmp(pseudoPm, "");
+                    sprintf(req,"%i\n%s\n",302, pseudoPm);
+                    envoyer_requete(sock, req);
+                }
+                envoyer_commande(sock, req, message);
+            } else {
+                if(strcmp(pseudoPm, "") != 0) { //refus de la discussion privé
+                    strcmp(pseudoPm, "");
+                    sprintf(req,"%i\n%s\n",302, pseudoPm);
+                    envoyer_requete(sock, req);
+                }
+                envoyer_message(sock, req, message);
             }
-            envoyer_message(sock, req, message);
         }
         strcpy(message, "");
         recupererMessage(message);
     }
 
+    //fermeture des mp si il y a une discussion en cours
+    if(strcmp(pseudoPm, "") != 0) {
+        sprintf(req,"%i\n",1);
+        envoyer_requete(socPm, req);
+    }
 	sprintf(req,"%i\n",0);
     afficherLigne(messWin, "Envoie 0\n");
 	envoyer_requete(sock, req);
@@ -82,6 +99,57 @@ void* gestion_lecture(void *soc) {
     int sock = *(int*) soc;
     while(1) {
         lire_reponse(sock);
+    }
+}
+
+void* gestion_lecturePm() {
+    while(1) {
+        char rep[BUFF_MAX];
+        int repID=-1;
+        //On vide le buffer
+        strcpy(rep, "");
+
+        //On lit la réponse
+        CHECK(read(socPm, rep, BUFF_MAX), "ERREUR READ")
+
+        //TEST affiche les requetes entrente
+        /*char temp[BUFF_MAX];
+        sprintf(temp ,"Requete recu : '%s'\n", rep);
+        afficherLigne(messWin, temp);*/
+
+        char params[BUFF_MAX]="";
+        char repIDc[BUFF_MAX];
+
+        //recuperation du code de la requete
+        stpcpy(params, rep);
+        split(repIDc, params);
+        if(strcmp(repIDc,"")==0) {
+            afficherLigne(messWin, "Requete vide : exit thread\n");
+            pthread_exit(0);
+        }
+        repID = atoi(repIDc);
+
+        //switch pour faire le traitement associe au code de la requete
+        switch(repID){
+            case 1 : //Quitter
+                afficherLigne(messWin, "Réponse 0\n");
+                pthread_exit(0);
+                break;
+            case 212: //Message
+            {
+                char pseudo[BUFF_MAX], cCouleur[BUFF_MAX], texte[BUFF_MAX];
+                split(pseudo, params);
+                split(cCouleur, params);
+                int couleur = atoi(cCouleur);
+                split(texte, params);
+                afficherMessage(messWin, pseudo, texte, couleur);
+                break;
+            }
+            default: //Code requete inconnu
+                afficherErreur(messWin, "REQUETTE INCONNUE", repIDc);
+                break;
+        }
+
     }
 }
 
@@ -198,6 +266,15 @@ void lire_reponse(int soc){
         case 300: //demande de mp
             demandePrive(params);
             break;
+        case 301: //demande de mp accepté
+            afficherMessageServeur(messWin, "La demande de conversation privé a été accepté (\\leave pour quitter)");
+            split(pseudoPm, params);
+            char ip[BUFF_MAX];
+            connecterPrive(params);
+            break;
+        case 302: //demande de mp refusé
+            afficherMessageServeur(messWin, "La demande de conversation privé a été refusé");
+            break;
         case 400: //Erreur
         {
             char messErreur[BUFF_MAX];
@@ -228,6 +305,11 @@ void envoyer_message(int soc, char *req, char *message) {
     /*sprintf(message, "Envoie du message: %s", req);
     afficherLigne(messWin, message);*/
     envoyer_requete(soc, req);
+}
+
+void envoyer_messagePrive(char *req, char *message) {
+    sprintf(req,"%i\n%s\n",212,message);
+    envoyer_requete(socPm, req);
 }
 
 /**
@@ -264,22 +346,65 @@ void envoyer_requete(int soc, char *req){
 }
 
 void demandePrive(char *params) {
-    char pseudo[BUFF_MAX];
-    split(pseudo, params);
+    split(pseudoPm, params);
     char message[BUFF_MAX] = "L'utilisateur ";
-    strcat(message, pseudo);
+    strcat(message, pseudoPm);
     strcat(message, " veut entammer une discussion privée avec vous. Envoyer \\accept pour accepter la discussion");
     afficherMessageServeur(messWin, message);
-    demPrive=1;
 }
 
-//return la socket?
-int startPrive(int soc, char *req) {
-        demPrive=0;
-        pm=1;
-        sprintf(req,"%i\n%s\n",301, "myip");
-        envoyer_requete(soc, req); //envoie de mon ip
-    return 0;
+
+void startPrive(int soc, char *req) {
+    sprintf(req,"%i\n%s\n",301, pseudoPm);
+    envoyer_requete(soc, req);
+    int socServeur;
+    //Création des adresses
+    struct sockaddr_in addr_serveur;
+    struct sockaddr_in addr_client;
+    int tailleClient;
+    unsigned int serveur_taille;
+
+    socServeur = socket(AF_INET,SOCK_STREAM,0);
+
+    addr_serveur.sin_family = AF_INET;
+    addr_serveur.sin_port = htons(PORT_PM);
+    addr_serveur.sin_addr.s_addr = htonl(INADDR_ANY);
+    memset(addr_serveur.sin_zero,0,8);
+
+    //On bind le socket et on le met en mode écoute
+    CHECK(bind(socServeur, (struct sockaddr*)&addr_serveur, sizeof(addr_serveur)), "ERREUR BIND");
+    CHECK(listen(socServeur,1),"ERREUR LISTEN")
+
+    //On récupère la taille de l'adresse du client
+    tailleClient = sizeof(struct sockaddr);
+
+    //On attend qu'un client se connecte
+    CHECK((socPm = accept(socServeur, (struct sockaddr*)&addr_client, (unsigned int*)&tailleClient)), "ERREUR ACCEPT")
+    pthread_t thread_pm;
+    pthread_create(&thread_pm, NULL, gestion_lecturePm, NULL);
+
+    pthread_join(thread_pm, NULL);
+}
+
+void connecterPrive(char *params) {
+    split(pseudoPm, params);
+    char ip[BUFF_MAX];
+    split(ip, params);
+    socPm =  socket(AF_INET,SOCK_STREAM,0);
+    //Création de l'adresse du serveur
+    struct sockaddr_in addr_serveur;
+
+    addr_serveur.sin_family = AF_INET;
+    addr_serveur.sin_port = htons(PORT_PM);
+    inet_aton(ip,&(addr_serveur.sin_addr));
+    memset(addr_serveur.sin_zero,0,8);
+
+    //Connection au serveur
+    CHECK(connect(socPm,(struct sockaddr*)&addr_serveur, sizeof(addr_serveur)), "ERREUR CONNECT")
+    pthread_t threads[2];
+
+    CHECK(pthread_create(&threads[0], NULL, gestion_lecturePm, NULL ), "ERREUR création thread envoie")
+    pthread_join(threads[0], NULL);
 }
 
 /**
@@ -288,8 +413,8 @@ int startPrive(int soc, char *req) {
  */
 int main(){
     quitter=0;
-    pm=0;
-    demPrive=0;
+    socPm=-1;
+    strcmp(pseudoPm, "");
     //Handler pour dérouter les signaux
     struct sigaction newact;
     int sts;

@@ -19,6 +19,7 @@
 
 // Constantes
 #define PORT 5000
+#define PORT_PM 5001
 #define BUFF_MAX 1024
 
 // Structures
@@ -61,8 +62,10 @@ void *gestion_lecture(void *soc);
 void split(char *dest, char *params);
 void lire_reponse(int soc);
 void demandePrive(char *params);
-int startPrive(int soc, char *req);
+void startPrive(int soc, char *req);
+void connecterPrive(char *params);
 void envoyer_message(int soc, char *req, char *message);
+void envoyer_messagePrive(char *req, char *message);
 void envoyer_commande(int soc, char *req, char *commande);
 void envoyer_requete(int soc, char *req);
 
