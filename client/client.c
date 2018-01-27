@@ -45,6 +45,7 @@ void* gestion_envoie(void *soc) {
     while(strcmp(message,"\\exit\n")!=0 && !quitter){
         if(socPm != -1){
             if(strcmp(message, "\\leave\n")==0){
+                afficherMessageServeur(messWin, "La discussion privé est terminé");
                 sprintf(req,"%i\n",1);
                 envoyer_requete(socPm, req);
                 socPm=-1;
@@ -132,7 +133,9 @@ void* gestion_lecturePm() {
         //switch pour faire le traitement associe au code de la requete
         switch(repID){
             case 1 : //Quitter
-                afficherLigne(messWin, "Réponse 0\n");
+                afficherMessageServeur(messWin, "La discussion privé est terminé");
+                socPm=-1;
+                strcpy(pseudoPm, "");
                 pthread_exit(0);
                 break;
             case 212: //Message
@@ -266,8 +269,6 @@ void lire_reponse(int soc){
             break;
         case 301: //demande de mp accepté
             afficherMessageServeur(messWin, "La demande de conversation privé a été accepté (\\leave pour quitter)");
-            split(pseudoPm, params);
-            char ip[BUFF_MAX];
             connecterPrive(params);
             break;
         case 302: //demande de mp refusé
@@ -308,6 +309,9 @@ void envoyer_message(int soc, char *req, char *message) {
 void envoyer_messagePrive(char *req, char *message) {
     sprintf(req,"%i\n%s\n",212,message);
     envoyer_requete(socPm, req);
+    char mess[BUFF_MAX];
+    split(mess, message);
+    afficherMessage(messWin, "Moi", mess, 2);
 }
 
 /**
@@ -412,7 +416,7 @@ void connecterPrive(char *params) {
 int main(){
     quitter=0;
     socPm=-1;
-    strcmp(pseudoPm, "");
+    strcpy(pseudoPm, "");
     //Handler pour dérouter les signaux
     struct sigaction newact;
     int sts;
