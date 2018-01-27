@@ -25,6 +25,7 @@
 struct Client {
     int socket;
     char nom[10];
+	char ip[16];
 	int couleur;
     UT_hash_handle hh;
 };
@@ -72,6 +73,7 @@ void diffusion(struct Salon *salon, char* message);
 void traiter_req0(int soc);
 void traiter_req100(struct Salon *salon,struct Client *client, char* texte);
 void traiter_req101(struct Salon **salon,struct Client *client, char* texte);
+void traiter_req300(struct Salon *salon,struct Client *client, int resultat, char* texte);
 void* traiterClient(void* ptr);
 void dem_lecture();
 void dem_ecriture();

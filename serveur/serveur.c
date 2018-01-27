@@ -146,6 +146,37 @@ void traiter_req101(struct Salon **salon, struct Client *client,char* texte){
 }
 
 /**
+ * @name traiter_req300
+ * @brief Fonction permettant de traiter les messages liés a la messagerie privée
+ * @param salon
+ * @param client
+ * @param resultat
+ * @param texte
+ */
+void traiter_req300(struct Salon *salon, struct Client *client, int resultat, char* texte){
+	char message[BUFF_MAX];
+	struct Client *c;
+	
+	char ps[BUFF_MAX];//Pseudo de l'utilisateur à contacter
+	
+	split(ps,texte);//on récupère le pseudo dans le texte envoyé
+	dem_lecture();
+	HASH_FIND_STR( salon->clients, ps, c);//On cherche si ce pseudo existe déja dans le serveur
+	rendre();
+	if(c!=NULL){
+		switch(resultat){
+			case 301://Le client a accepté la connexion privée
+				sprintf(message, "303\n%s\n%s\n",client->nom, client->ip);	
+			break;
+			case 302://Le client a refusé la connexion privée
+				sprintf(message, "304\n%s\n",client->nom);
+			break;
+		}
+		envoyer_reponse(c->socket, message);
+	}
+}
+
+/**
  * @name envoyer_reponse
  * @brief Fonction permettant de transmettre une requete à un socket
  * @param soc
@@ -179,7 +210,7 @@ void initServeur(){
  * @param ptr
  */
 void* traiterClient(void* ptr){
-	int socClient = *(int *) ptr;
+	/*int socClient = *(int *) ptr;
 	static int i = 0;
 	i++;
 	//Création de notre client
@@ -187,7 +218,10 @@ void* traiterClient(void* ptr){
 	client = (struct Client*)malloc(sizeof(struct Client));
 	client->socket = socClient;
 	sprintf(client->nom,"%s%d","chaton", i);
-	client->couleur=0;
+	client->couleur=0;*/
+	
+	struct Client *client = (struct Client*) ptr;
+	int socClient = client->socket;
 	//Ajout du client au salon de base
 	struct Salon *salon;
 	dem_lecture();
@@ -223,6 +257,9 @@ void* traiterClient(void* ptr){
 			break;			
 			case 101:
 				traiter_req101(&salon, client, param);
+			break;			
+			case 301 ... 302:
+				traiter_req300(salon, client, resultat, param);
 			break;
 			case 0:
 				printf("Requete 0\n");
@@ -341,8 +378,19 @@ int main(){
 		printf("Port : %d\n", ntohs(addr_serveur.sin_port));
 		printf("Adresse du client: %s\n", inet_ntoa(addr_client.sin_addr));
 
+		static int i = 0;
+		i++;
+		//Création de notre client
+		struct Client *client = NULL;
+		client = (struct Client*)malloc(sizeof(struct Client));
+		client->socket = socClient;
+		sprintf(client->nom,"%s%d","chaton", i);
+		sprintf(client->ip,"%s", inet_ntoa(addr_client.sin_addr));
+		client->couleur=0;
+		
 		pthread_t thread_client;
-		pthread_create(&thread_client, NULL, traiterClient, (void *)&socClient);
+		pthread_create(&thread_client, NULL, traiterClient, (void *)client);
+		//pthread_create(&thread_client, NULL, traiterClient, (void *)&socClient);
 		pthread_detach(thread_client);
 	}
 	//On ferme la socket serveur
