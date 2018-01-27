@@ -166,10 +166,10 @@ void traiter_req300(struct Salon *salon, struct Client *client, int resultat, ch
 	if(c!=NULL){
 		switch(resultat){
 			case 301://Le client a accepté la connexion privée
-				sprintf(message, "303\n%s\n%s\n",client->nom, client->ip);	
+				sprintf(message, "301\n%s\n%s\n",client->nom, client->ip);	
 			break;
 			case 302://Le client a refusé la connexion privée
-				sprintf(message, "304\n%s\n",client->nom);
+				sprintf(message, "302\n%s\n",client->nom);
 			break;
 		}
 		envoyer_reponse(c->socket, message);
