@@ -48,7 +48,7 @@ void* gestion_envoie(void *soc) {
                 sprintf(req,"%i\n",1);
                 envoyer_requete(socPm, req);
                 socPm=-1;
-                strcmp(pseudoPm, "");
+                strcpy(pseudoPm, "");
             }else {
                 envoyer_messagePrive(req, message);
             }
@@ -59,14 +59,14 @@ void* gestion_envoie(void *soc) {
                 startPrive(sock, req);
             } else if(message[0] == '\\') {
                 if(strcmp(pseudoPm, "") != 0) { //refus de la discussion privé
-                    strcmp(pseudoPm, "");
+                    strcpy(pseudoPm, "");
                     sprintf(req,"%i\n%s\n",302, pseudoPm);
                     envoyer_requete(sock, req);
                 }
                 envoyer_commande(sock, req, message);
             } else {
                 if(strcmp(pseudoPm, "") != 0) { //refus de la discussion privé
-                    strcmp(pseudoPm, "");
+                    strcpy(pseudoPm, "");
                     sprintf(req,"%i\n%s\n",302, pseudoPm);
                     envoyer_requete(sock, req);
                 }
@@ -381,7 +381,7 @@ void startPrive(int soc, char *req) {
     pthread_t thread_pm;
     pthread_create(&thread_pm, NULL, gestion_lecturePm, NULL);
 
-    pthread_join(thread_pm, NULL);
+    pthread_detach(thread_pm);
 }
 
 void connecterPrive(char *params) {
@@ -399,10 +399,10 @@ void connecterPrive(char *params) {
 
     //Connection au serveur
     CHECK(connect(socPm,(struct sockaddr*)&addr_serveur, sizeof(addr_serveur)), "ERREUR CONNECT")
-    pthread_t threads[2];
+    pthread_t thread_pm;
 
-    CHECK(pthread_create(&threads[0], NULL, gestion_lecturePm, NULL ), "ERREUR création thread envoie")
-    pthread_join(threads[0], NULL);
+    CHECK(pthread_create(&thread_pm, NULL, gestion_lecturePm, NULL ), "ERREUR création thread envoie")
+    pthread_detach(thread_pm);
 }
 
 /**
