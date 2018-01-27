@@ -11,7 +11,7 @@
 #include "../libs/include.h"
 
 WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;
-int quitter;
+int quitter,demPrive ,pm;
 
 void entreeSalon(WINDOW *win, char *nomSalon, int creationSalon);
 
@@ -44,9 +44,21 @@ void* gestion_envoie(void *soc) {
     while(strcmp(message,"\\exit\n")!=0 && !quitter){
         if(strcmp(message, "\\help\n")==0){
 			help();
-		}else if(message[0] == '\\') {
+		}else if(strcmp(message,"\\accept\n") && demPrive==1) {
+            startPrive(sock, req);
+        } else if(message[0] == '\\') {
+            if(demPrive==1) { //refus de la discussion privé
+                demPrive=0;
+                sprintf(req,"%i\n",302);
+                envoyer_requete(sock, req);
+            }
             envoyer_commande(sock, req, message);
         } else {
+            if(demPrive==1) { //refus de la discussion privé
+                demPrive=0;
+                sprintf(req,"%i\n",302);
+                envoyer_requete(sock, req);
+            }
             envoyer_message(sock, req, message);
         }
         strcpy(message, "");
@@ -59,6 +71,7 @@ void* gestion_envoie(void *soc) {
     afficherLigne(messWin, "exit envoie\n");
     pthread_exit(0);
 }
+
 
 /**
  * @name gestion_lecture
@@ -182,8 +195,8 @@ void lire_reponse(int soc){
 		case 211: // \me
             afficherLigne(messWin, params);
             break;
-        case 300:
-            afficherLigne(messWin, "Réponse 300\n");
+        case 300: //demande de mp
+            demandePrive(params);
             break;
         case 400: //Erreur
         {
@@ -250,12 +263,33 @@ void envoyer_requete(int soc, char *req){
     CHECK(write(soc, req, strlen(req)+1), "ERREUR WRITE");
 }
 
+void demandePrive(char *params) {
+    char pseudo[BUFF_MAX];
+    split(pseudo, params);
+    char message[BUFF_MAX] = "L'utilisateur ";
+    strcat(message, pseudo);
+    strcat(message, " veut entammer une discussion privée avec vous. Envoyer \\accept pour accepter la discussion");
+    afficherMessageServeur(messWin, message);
+    demPrive=1;
+}
+
+//return la socket?
+int startPrive(int soc, char *req) {
+        demPrive=0;
+        pm=1;
+        sprintf(req,"%i\n%s\n",301, "myip");
+        envoyer_requete(soc, req); //envoie de mon ip
+    return 0;
+}
+
 /**
  * @name main
  * @brief Fonction principale du client
  */
 int main(){
     quitter=0;
+    pm=0;
+    demPrive=0;
     //Handler pour dérouter les signaux
     struct sigaction newact;
     int sts;

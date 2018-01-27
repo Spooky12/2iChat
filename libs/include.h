@@ -59,6 +59,8 @@ void *gestion_envoie(void *soc);
 void *gestion_lecture(void *soc);
 void split(char *dest, char *params);
 void lire_reponse(int soc);
+void demandePrive(char *params);
+int startPrive(int soc, char *req);
 void envoyer_message(int soc, char *req, char *message);
 void envoyer_commande(int soc, char *req, char *commande);
 void envoyer_requete(int soc, char *req);
