@@ -137,12 +137,10 @@ void* gestion_lecturePm() {
                 break;
             case 212: //Message
             {
-                char pseudo[BUFF_MAX], cCouleur[BUFF_MAX], texte[BUFF_MAX];
-                split(pseudo, params);
-                split(cCouleur, params);
-                int couleur = atoi(cCouleur);
+                char texte[BUFF_MAX];
                 split(texte, params);
-                afficherMessage(messWin, pseudo, texte, couleur);
+                //couleur au pif en attendant de mettre une couleur spéciale PM
+                afficherMessage(messWin, pseudoPm, texte, 2);
                 break;
             }
             default: //Code requete inconnu
