@@ -60,16 +60,16 @@ void* gestion_envoie(void *soc) {
                 startPrive(sock, req);
             } else if(message[0] == '\\') {
                 if(strcmp(pseudoPm, "") != 0) { //refus de la discussion privé
-                    strcpy(pseudoPm, "");
                     sprintf(req,"%i\n%s\n",302, pseudoPm);
                     envoyer_requete(sock, req);
+                    strcpy(pseudoPm, "");
                 }
                 envoyer_commande(sock, req, message);
             } else {
                 if(strcmp(pseudoPm, "") != 0) { //refus de la discussion privé
-                    strcpy(pseudoPm, "");
                     sprintf(req,"%i\n%s\n",302, pseudoPm);
                     envoyer_requete(sock, req);
+                    strcpy(pseudoPm, "");
                 }
                 envoyer_message(sock, req, message);
             }
@@ -104,6 +104,7 @@ void* gestion_lecture(void *soc) {
 }
 
 void* gestion_lecturePm() {
+    afficherMessageServeur(messWin, "La discussion privé a commencé (\\leave pour quitter)");
     while(1) {
         char rep[BUFF_MAX];
         int repID=-1;

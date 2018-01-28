@@ -19,8 +19,13 @@ Des commandes spécifiques peuvent être utilisées pour certaines tâches. Elle
 Les paramètres requis sont désignés par `<` et `>`.
 Les paramètres optionels sont désignés par `[` et `]`.
 ##### Liste des commandes 
+* `\help` Permet d'afficher l'aide
 * `\connect <nomSalon>` Depuis l'accueil, permet de se connecter au salon `nomSalon`
-* `\leave` Permet de quitter le salon dans lequel on se trouve (Hors acceuil)
+* `\prive <pseudo>` Permet d'envoyer une demmande de conversation privée à l'utilisateur `pseudo`
+* `\accept` Permet d'accepter une demmande de conversation privée
+* `\leave`
+    * Dans un salon (hors Accueil) : permet de quitter le salon et de revenir à l'accueil
+    * Dans une conversation privée avec un autre utilisateur : permet de quitter la discussion privée
 * `\create <nomSalon>` Depuis l'accueil, permet de créer un nouveau salon `nomSalon`
 * `\exit` Permet de fermer le programme
 * `\pseudo <pseudo>` Permet de changer de pseudo
