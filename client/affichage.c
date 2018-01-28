@@ -34,7 +34,7 @@ void initialiserCurses() {
 //********TODO: affichage d'un message d'info au lancement ********//
 	drawChatWin();
 	drawInputWin();
-	//splashScreen();
+	splashScreen();
     //Mise a jour de la fenetre
 	wcursyncup(inputWin);
 	wrefresh(mainWin);
@@ -114,6 +114,17 @@ void drawInputWin() {
    textWin = subwin(mainWin, (LINES * 0.2) - 1, COLS, (LINES * 0.8) + 1, 0);
    box(textWin, 0, 0);
    inputWin = subwin(textWin, (LINES * 0.2) - 3, COLS - 2, (LINES * 0.8) + 2, 1);
+}
+
+/**
+ * @name splashScreen
+ * @brief Fonction affichant un message lors de l'initialisation du client
+ */
+void splashScreen() {
+   	char str[BUFF_MAX] = "Bienvenue dans 2iChat\n";
+	strcat(str, "Vous êtes actuellement dans l'accueil\n");
+	strcat(str, "Faites un \\help pour voir les commandes disponibles\n");
+	afficherMessageServeur(messWin, str);
 }
 
 void changerTitre(char *nouveauTitre) {

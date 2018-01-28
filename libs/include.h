@@ -44,6 +44,7 @@ void reloadTerminal();
 void initialiserCouleurs();
 void drawChatWin();
 void drawInputWin();
+void splashScreen();
 void changerTitre(char *nouveauTitre);
 void sortieSalon(WINDOW *win);
 void entreeSalon(WINDOW *win, char *nomSalon, int creationSalon);
