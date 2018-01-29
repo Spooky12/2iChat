@@ -125,6 +125,11 @@ void splashScreen() {
 	afficherMessageServeur(messWin, str);
 }
 
+/**
+ * @name changerTitre
+ * @brief Fonction permettant de changer le titre de la fenetre de chat
+ * @param nouveauTitre
+ */
 void changerTitre(char *nouveauTitre) {
     endwin();
     refresh();
@@ -134,11 +139,21 @@ void changerTitre(char *nouveauTitre) {
     wrefresh(mainWin);
 }
 
+/**
+ * @name sortieSalon
+ * @brief Fonction permettant d'accualiser l'affichage lors de la sortie d'un salon
+ */
 void sortieSalon() {
     changerTitre("Accueil");
     afficherMessageServeur(messWin, "Vous avez bien quitté le salon");
 }
 
+/**
+ * @name entreeSalon
+ * @brief Fonction permettant d'accualiser l'affichage lors de l'entré dans un salon
+ * @param nomSalon
+ * @param creationSalon
+ */
 void entreeSalon(char *nomSalon, int creationSalon) {
     changerTitre(nomSalon);
     char message[BUFF_MAX] = "Le salon ";

@@ -101,6 +101,10 @@ void* gestion_lecture(void *soc) {
     }
 }
 
+/**
+ * @name gestion_lecturePm
+ * @brief boucle permettant de s'occuper de la reception et du traitement des requetes du lors d'une discussion privée
+ */
 void* gestion_lecturePm() {
     afficherMessageServeur(messWin, "La discussion privé a commencé (\\leave pour quitter)");
     while(1) {
@@ -292,7 +296,7 @@ void lire_reponse(int soc){
 
 /**
  * @name envoyer_message
- * @brief Fonction permettant l'envoie de message
+ * @brief Fonction permettant l'envoie de message au serveur
  * @param soc
  * @param req
  * @param message
@@ -305,6 +309,12 @@ void envoyer_message(int soc, char *req, char *message) {
     envoyer_requete(soc, req);
 }
 
+/**
+ * @name envoyer_messagePrive
+ * @brief Fonction permettant l'envoie de message lors d'une discussion privée
+ * @param req
+ * @param message
+ */
 void envoyer_messagePrive(char *req, char *message) {
     sprintf(req,"%i\n%s\n",212,message);
     envoyer_requete(socPm, req);
@@ -346,6 +356,11 @@ void envoyer_requete(int soc, char *req){
     CHECK(write(soc, req, strlen(req)+1), "ERREUR WRITE");
 }
 
+/**
+ * @name demandePrive
+ * @brief Fonction permettant d'afficher la requete de demmande de discussion privée
+ * @param params
+ */
 void demandePrive(char *params) {
     split(pseudoPm, params);
     char message[BUFF_MAX] = "L'utilisateur ";
@@ -354,7 +369,12 @@ void demandePrive(char *params) {
     afficherMessageServeur(messWin, message);
 }
 
-
+/**
+ * @name startPrive
+ * @brief Fonction permettant de démarrer une discussion privée entre deux utilisateur en créant un socket spécifique entre les deux utilisateurs
+ * @param soc
+ * @param req
+ */
 void startPrive(int soc, char *req) {
     sprintf(req,"%i\n%s\n",301, pseudoPm);
     envoyer_requete(soc, req);
@@ -387,6 +407,11 @@ void startPrive(int soc, char *req) {
     pthread_detach(thread_pm);
 }
 
+/**
+ * @name connecterPrive
+ * @brief Fonction permettant de se connecter au socket de l'utilisateur pour la discussion privée
+ * @param params
+ */
 void connecterPrive(char *params) {
     split(pseudoPm, params);
     char ip[BUFF_MAX];
