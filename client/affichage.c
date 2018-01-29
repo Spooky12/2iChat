@@ -31,10 +31,8 @@ void initialiserCurses() {
 	//Lancement des couleurs
 	initialiserCouleurs();
 
-//********TODO: affichage d'un message d'info au lancement ********//
 	drawChatWin();
 	drawInputWin();
-	splashScreen();
     //Mise a jour de la fenetre
 	wcursyncup(inputWin);
 	wrefresh(mainWin);
@@ -123,7 +121,7 @@ void drawInputWin() {
 void splashScreen() {
    	char str[BUFF_MAX] = "Bienvenue dans 2iChat\n";
 	strcat(str, "Vous êtes actuellement dans l'accueil\n");
-	strcat(str, "Faites un \\help pour voir les commandes disponibles\n");
+	strcat(str, "Faites un \\help pour voir les commandes disponibles");
 	afficherMessageServeur(messWin, str);
 }
 
@@ -132,7 +130,7 @@ void changerTitre(char *nouveauTitre) {
     refresh();
     clear();
     strcpy(titreFenetre, nouveauTitre);
-    initialiserCurses();
+    reloadTerminal();
     wrefresh(mainWin);
 }
 

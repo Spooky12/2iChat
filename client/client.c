@@ -447,6 +447,7 @@ int main(){
     //Connection au serveur
     CHECK(connect(socClient,(struct sockaddr*)&addr_serveur, sizeof(addr_serveur)), "ERREUR CONNECT")
     changerTitre("Accueil");
+	splashScreen();
     pthread_t threads[2];
 
     CHECK(pthread_create(&threads[0], NULL, gestion_envoie, (void *) &socClient ), "ERREUR création thread envoie")
