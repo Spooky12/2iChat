@@ -134,12 +134,12 @@ void changerTitre(char *nouveauTitre) {
     wrefresh(mainWin);
 }
 
-void sortieSalon(WINDOW *win) {
+void sortieSalon() {
     changerTitre("Accueil");
-    afficherMessageServeur(win, "Vous avez bien quitté le salon");
+    afficherMessageServeur(messWin, "Vous avez bien quitté le salon");
 }
 
-void entreeSalon(WINDOW *win, char *nomSalon, int creationSalon) {
+void entreeSalon(char *nomSalon, int creationSalon) {
     changerTitre(nomSalon);
     char message[BUFF_MAX] = "Le salon ";
     strcat(message, nomSalon);
@@ -148,7 +148,7 @@ void entreeSalon(WINDOW *win, char *nomSalon, int creationSalon) {
     } else {
         strcat(message, " a bien été rejoint !");
     }
-    afficherMessageServeur(win, message);
+    afficherMessageServeur(messWin, message);
 }
 
 /**

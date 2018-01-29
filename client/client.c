@@ -14,8 +14,6 @@ WINDOW *mainWin, *textWin, *messWin, *messWinBox, *inputWin;
 int quitter, socPm;
 char pseudoPm[BUFF_MAX];
 
-void entreeSalon(WINDOW *win, char *nomSalon, int creationSalon);
-
 /**
  * @name deroute
  * @brief fonction permettant de gerer les signaux dérouté et de faire le traitement associé
@@ -247,14 +245,14 @@ void lire_reponse(int soc){
         {
             char nomSalon[BUFF_MAX];
             split(nomSalon, params);
-            entreeSalon(messWin, nomSalon, 0);
+            entreeSalon(nomSalon, 0);
             break;
         }
         case 203: //creation salon (nom salon)
         {
             char nomSalon2[BUFF_MAX];
             split(nomSalon2, params);
-            entreeSalon(messWin, nomSalon2, 1);
+            entreeSalon(nomSalon2, 1);
             break;
         }
         case 204: //creation salon (nom salon)
