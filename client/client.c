@@ -16,7 +16,7 @@ char pseudoPm[BUFF_MAX];
 
 /**
  * @name deroute
- * @brief fonction permettant de gerer les signaux dérouté et de faire le traitement associé
+ * @brief Fonction permettant de gérer les signaux dérouté et de faire le traitement associé
  * @param signal_number
  */
 void deroute (int signal_number)
@@ -31,7 +31,7 @@ void deroute (int signal_number)
 
 /**
  * @name gestion_envoie
- * @brief boucle permettant de s'occuper de du traitement et de l'envoie au serveur des inputs du client
+ * @brief Boucle permettant de s'occuper du traitement et de l'envoie au serveur des inputs du client
  * @param soc
  */
 void* gestion_envoie(void *soc) {
@@ -43,7 +43,7 @@ void* gestion_envoie(void *soc) {
     while(strcmp(message,"\\exit\n")!=0 && !quitter){
         if(socPm != -1){
             if(strcmp(message, "\\leave\n")==0){
-                afficherMessageServeur(messWin, "La discussion privé est terminé");
+                afficherMessageServeur(messWin, "La discussion privée est terminée");
                 sprintf(req,"%i\n",1);
                 envoyer_requete(socPm, req);
                 socPm=-1;
@@ -91,7 +91,7 @@ void* gestion_envoie(void *soc) {
 
 /**
  * @name gestion_lecture
- * @brief boucle permettant de s'occuper de la reception et du traitement des requetes du serveur
+ * @brief Boucle permettant de s'occuper de la réception et du traitement des requêtes du serveur
  * @param soc
  */
 void* gestion_lecture(void *soc) {
@@ -103,7 +103,7 @@ void* gestion_lecture(void *soc) {
 
 /**
  * @name gestion_lecturePm
- * @brief boucle permettant de s'occuper de la reception et du traitement des requetes du lors d'une discussion privée
+ * @brief Boucle permettant de s'occuper de la réception et du traitement des requêtes du lors d'une discussion privée
  */
 void* gestion_lecturePm() {
     afficherMessageServeur(messWin, "La discussion privé a commencé (\\leave pour quitter)");
@@ -116,7 +116,7 @@ void* gestion_lecturePm() {
         //On lit la réponse
         CHECK(read(socPm, rep, BUFF_MAX), "ERREUR READ")
 
-        //TEST affiche les requetes entrente
+        //TEST affiche les requêtes entrente
         /*char temp[BUFF_MAX];
         sprintf(temp ,"Requete recu : '%s'\n", rep);
         afficherLigne(messWin, temp);*/
@@ -128,7 +128,7 @@ void* gestion_lecturePm() {
         stpcpy(params, rep);
         split(repIDc, params);
         if(strcmp(repIDc,"")==0) {
-            afficherLigne(messWin, "Requete vide : exit thread\n");
+            afficherLigne(messWin, "Requête vide : exit thread\n");
             pthread_exit(0);
         }
         repID = atoi(repIDc);
@@ -136,7 +136,7 @@ void* gestion_lecturePm() {
         //switch pour faire le traitement associe au code de la requete
         switch(repID){
             case 1 : //Quitter
-                afficherMessageServeur(messWin, "La discussion privé est terminé");
+                afficherMessageServeur(messWin, "La discussion privée est terminée");
                 socPm=-1;
                 strcpy(pseudoPm, "");
                 pthread_exit(0);
@@ -186,7 +186,7 @@ void split(char *dest, char *params) {
 
 /**
  * @name lire_reponse
- * @brief fonction permettant de s'occuper de la reception et du traitement des requetes du serveur
+ * @brief Fonction permettant de s'occuper de la réception et du traitement des requêtes du serveur
  * @param soc
  */
 void lire_reponse(int soc){
@@ -198,7 +198,7 @@ void lire_reponse(int soc){
     //On lit la réponse
     CHECK(read(soc, rep, BUFF_MAX), "ERREUR READ")
 
-    //TEST affiche les requetes entrente
+    //TEST affiche les requêtes entrente
 	/*char temp[BUFF_MAX];
 	sprintf(temp ,"Requete recu : '%s'\n", rep);
 	afficherLigne(messWin, temp);*/
@@ -210,7 +210,7 @@ void lire_reponse(int soc){
     stpcpy(params, rep);
     split(repIDc, params);
     if(strcmp(repIDc,"")==0) {
-        afficherLigne(messWin, "Requete vide : exit thread\n");
+        afficherLigne(messWin, "Requête vide : exit thread\n");
         pthread_exit(0);
     }
     repID = atoi(repIDc);
@@ -271,11 +271,11 @@ void lire_reponse(int soc){
             demandePrive(params);
             break;
         case 301: //demande de mp accepté
-            afficherMessageServeur(messWin, "La demande de conversation privé a été accepté (\\leave pour quitter)");
+            afficherMessageServeur(messWin, "La demande de conversation privée a été acceptée (\\leave pour quitter)");
             connecterPrive(params);
             break;
         case 302: //demande de mp refusé
-            afficherMessageServeur(messWin, "La demande de conversation privé a été refusé");
+            afficherMessageServeur(messWin, "La demande de conversation privée a été refusée");
             break;
         case 400: //Erreur
         {
@@ -347,7 +347,7 @@ void envoyer_commande(int soc, char *req, char *commande) {
 
 /**
  * @name envoyer_requete
- * @brief Fonction permettant l'envoie de requete
+ * @brief Fonction permettant l'envoie de requête
  * @param soc
  * @param req
  */
@@ -358,20 +358,20 @@ void envoyer_requete(int soc, char *req){
 
 /**
  * @name demandePrive
- * @brief Fonction permettant d'afficher la requete de demmande de discussion privée
+ * @brief Fonction permettant d'afficher la requête de demande de discussion privée
  * @param params
  */
 void demandePrive(char *params) {
     split(pseudoPm, params);
     char message[BUFF_MAX] = "L'utilisateur ";
     strcat(message, pseudoPm);
-    strcat(message, " veut entammer une discussion privée avec vous. Envoyer \\accept pour accepter la discussion");
+    strcat(message, " veut entamer une discussion privée avec vous. Envoyer \\accept pour accepter la discussion");
     afficherMessageServeur(messWin, message);
 }
 
 /**
  * @name startPrive
- * @brief Fonction permettant de démarrer une discussion privée entre deux utilisateur en créant un socket spécifique entre les deux utilisateurs
+ * @brief Fonction permettant de démarrer une discussion privée entre deux utilisateurs en créant un socket spécifique entre les deux utilisateurs
  * @param soc
  * @param req
  */
@@ -436,8 +436,26 @@ void connecterPrive(char *params) {
 /**
  * @name main
  * @brief Fonction principale du client
+ * @param argc
+ * @param argv
+ * @return
  */
-int main(){
+int main(int argc, char *argv[]){
+    char addresseIP[BUFF_MAX];
+    if(argc > 2) {
+        printf("Erreur : trop d'arguments !\nL'argument attendu est l'adresse IP du serveur\nSans argument l'adresse par défaut est 127.0.0.1\n");
+        return 1;
+    } else if (argc ==2) {
+        strcpy(addresseIP, argv[1]);
+        //check si l'adresse IP est valide
+        struct sockaddr_in sa;
+        if(inet_aton(addresseIP,&(sa.sin_addr)) == 0) {
+            printf("Erreur l'argument %s n'est pas une adresse IP valide\n", addresseIP);
+            return 1;
+        }
+    } else { //pas d'argument donc IP par défaut
+        strcpy(addresseIP, "127.0.0.1");
+    }
     quitter=0;
     socPm=-1;
     strcpy(pseudoPm, "");
@@ -464,7 +482,7 @@ int main(){
 
     addr_serveur.sin_family = AF_INET;
     addr_serveur.sin_port = htons(PORT);
-    inet_aton("127.0.0.1",&(addr_serveur.sin_addr));
+    inet_aton(addresseIP,&(addr_serveur.sin_addr));
     memset(addr_serveur.sin_zero,0,8);
 
     //Connection au serveur

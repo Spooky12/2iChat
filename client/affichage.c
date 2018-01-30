@@ -4,7 +4,7 @@
  * @author Corentin A. & Thomas T.
  * @date 14 janvier 2018
  *
- * Ce fichier contient toutes les fonction servant à gérer l'affichage du client
+ * Ce fichier contient toutes les fonctions servant à gérer l'affichage du client
  *
  */
 #include <curses.h>
@@ -17,7 +17,7 @@ char titreFenetre[BUFF_MAX] = "CHAT 2i";
 
 /**
  * @name initialiserCurses
- * @brief Fonction initialisant les différents parametres de  curses
+ * @brief Fonction initialisant les différents paramètres de ncurses
  */
 void initialiserCurses() {
 	//Lancement de la fenetre principale
@@ -40,7 +40,7 @@ void initialiserCurses() {
 
 /**
  * @name reloadTerminal
- * @brief Fonction permettant de recharger la fenetre
+ * @brief Fonction permettant de recharger la fenêtre
  */
  void reloadTerminal(){
 	endwin();
@@ -80,7 +80,7 @@ void initialiserCouleurs(){
 
 /**
  * @name drawChatWin
- * @brief Fonction créant la fenetre utilisée pour afficher les messages
+ * @brief Fonction créant la fenêtre utilisée pour afficher les messages
  */
 void drawChatWin() {
     char titre[BUFF_MAX] = " ";
@@ -105,10 +105,10 @@ void drawChatWin() {
 
 /**
  * @name drawInputWin
- * @brief Fonction créant la fenetre utilisée pour taper les messages
+ * @brief Fonction créant la fenêtre utilisée pour taper les messages
  */
 void drawInputWin() {
-   // Création de la fenetre d'entrée et de sa bordure
+   // Création de la fenêtre d'entrée et de sa bordure
    textWin = subwin(mainWin, (LINES * 0.2) - 1, COLS, (LINES * 0.8) + 1, 0);
    box(textWin, 0, 0);
    inputWin = subwin(textWin, (LINES * 0.2) - 3, COLS - 2, (LINES * 0.8) + 2, 1);
@@ -127,7 +127,7 @@ void splashScreen() {
 
 /**
  * @name changerTitre
- * @brief Fonction permettant de changer le titre de la fenetre de chat
+ * @brief Fonction permettant de changer le titre de la fenêtre de chat
  * @param nouveauTitre
  */
 void changerTitre(char *nouveauTitre) {
@@ -141,7 +141,7 @@ void changerTitre(char *nouveauTitre) {
 
 /**
  * @name sortieSalon
- * @brief Fonction permettant d'accualiser l'affichage lors de la sortie d'un salon
+ * @brief Fonction permettant d'actualiser l'affichage lors de la sortie d'un salon
  */
 void sortieSalon() {
     changerTitre("Accueil");
@@ -150,7 +150,7 @@ void sortieSalon() {
 
 /**
  * @name entreeSalon
- * @brief Fonction permettant d'accualiser l'affichage lors de l'entré dans un salon
+ * @brief Fonction permettant d'actualiser l'affichage lors de l'entrée dans un salon
  * @param nomSalon
  * @param creationSalon
  */
@@ -159,7 +159,7 @@ void entreeSalon(char *nomSalon, int creationSalon) {
     char message[BUFF_MAX] = "Le salon ";
     strcat(message, nomSalon);
     if(creationSalon) {
-        strcat(message, " a bien été crée !");
+        strcat(message, " a bien été créé !");
     } else {
         strcat(message, " a bien été rejoint !");
     }
@@ -202,7 +202,7 @@ void afficherMessage(WINDOW *win, char* pseudo, char* texte, int couleur) {
     wprintw(win, "%s", texte);
     wprintw(win, "\n");
     wattroff(win, COLOR_PAIR(couleur));
-    //Mise a jour de la fenetre
+    //Mise a jour de la fenêtre
     wrefresh(win);
     wcursyncup(inputWin);
     wrefresh(mainWin);
@@ -216,7 +216,7 @@ void afficherMessage(WINDOW *win, char* pseudo, char* texte, int couleur) {
  */
 void afficherLigne(WINDOW *win, char* texte){
 	wprintw(win, "%s",texte);
-    //Mise a jour de la fenetre
+    //Mise a jour de la fenêtre
 	wrefresh(win);
 	wcursyncup(inputWin);
 	wrefresh(mainWin);
@@ -264,7 +264,7 @@ void recupererMessage(char *message) {
         }
         wclear(inputWin);
         mvwprintw(inputWin, 0, 0, message);
-        //Mise a jour de la fenetre
+        //Mise a jour de la fenêtre
         wrefresh(inputWin);
     }
 }
@@ -275,7 +275,7 @@ void recupererMessage(char *message) {
  */
 void help(){
 	char str[BUFF_MAX] = "Bienvenue dans 2iChat\n";
-	strcat(str, "Lors de la connection, vous accédez directement a l'accueil\n");
+	strcat(str, "Lors de la connexion, vous accédez directement à l'accueil\n");
 	strcat(str, "Commandes disponibles:\n");
 	strcat(str, "\\ping renvoie un pong pour tester la connectivité\n");
 	strcat(str, "\\list affiche la liste des serveurs sur l'accueil ou la liste des utilisateurs sur le salon\n");

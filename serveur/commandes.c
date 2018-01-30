@@ -80,7 +80,7 @@ int pseudo(char *message, struct Client *client, struct Salon *salon, char *text
 			rendre();
 			return 1;
 		}else{//Sinon on retourne une erreur
-			sprintf(message, "400\nUn client possède déja ce pseudo dans ce salon\n");
+			sprintf(message, "400\nUn client possède déjà ce pseudo dans ce salon\n");
 			return 0;
 		}
 	}else{//Sinon on retourne une erreur
@@ -198,7 +198,7 @@ void alea(struct Client *client, char *message, char *param){
 	int a = atoi(tmp);//On le convertis en int
 	split(tmp, param);//On récupère le second element
 	int b = atoi(tmp);//On le convertis en int
-	sprintf(message, "201\n%s à tiré un nombre aléatoire entre %d et %d et à obtenu %d\n",client->nom, min(a,b), max(a,b), (rand()% (max(a,b) - min(a,b) + 1)) + min(a,b));//on calcule un nombre aléatoire entre nos deux valeurs et on le renvoie
+	sprintf(message, "201\n%s a tiré un nombre aléatoire entre %d et %d et a obtenu %d\n",client->nom, min(a,b), max(a,b), (rand()% (max(a,b) - min(a,b) + 1)) + min(a,b));//on calcule un nombre aléatoire entre nos deux valeurs et on le renvoie
 }
 
 /**
@@ -234,10 +234,10 @@ void creation(char *message, char *param, struct Salon **salon, struct Client *c
 				rendre();
 				sprintf(message, "203\n%s\n", newSalon->nom);//On envoie une confirmation au client
 			}else{
-				sprintf(message, "400\nUn salon de ce nom existe déja\n");
+				sprintf(message, "400\nUn salon de ce nom existe déjà\n");
 			}
 		}else{
-			sprintf(message, "400\nLe nom du salon doit être compris entre 1 et 64 caracteres\n");
+			sprintf(message, "400\nLe nom du salon doit être compris entre 1 et 64 caractères\n");
 		}
 	}else{
 		sprintf(message, "400\nOn ne peut créer de salon que dans l'accueil\n");
@@ -274,7 +274,7 @@ void connection(char *message, char *param, struct Salon **salon, struct Client 
 				rendre();
 				sprintf(message, "202\n%s\n", nom);//On envoie une confirmation au client
 			}else{
-				sprintf(message, "400\nUn client ayant le même pseudo que vous est déja dans le salon %s. Veuillez changer de pseudo pour rejoindre ce salon",nom);
+				sprintf(message, "400\nUn client ayant le même pseudo que vous est déjà dans le salon %s. Veuillez changer de pseudo pour rejoindre ce salon",nom);
 			}
 		}else{
 			sprintf(message, "400\nLe salon %s n'existe pas\nUtilisez \\create %s pour créer ce salon",nom,nom);
@@ -286,7 +286,7 @@ void connection(char *message, char *param, struct Salon **salon, struct Client 
 
 /**
  * @name leave
- * @brief Fonction permettant de quiter le salon et de retourner sur l'accueil
+ * @brief Fonction permettant de quitter le salon et de retourner sur l'accueil
  * @param message
  * @param salon
  * @param client
@@ -311,19 +311,19 @@ void leave(char *message, struct Salon **salon, struct Client *client){
 				rendre();
 				sprintf(message, "204\n");//On envoie une confirmation au client
 			}else{
-				sprintf(message, "400\nUn client ayant le même pseudo que vous est déja dans l'accueil. Veuillez changer de pseudo pour quiter ce salon");
+				sprintf(message, "400\nUn client ayant le même pseudo que vous est déjà dans l'accueil. Veuillez changer de pseudo pour quitter ce salon");
 			}
 		}else{
 			sprintf(message, "400\nErreur lors de la sortie du salon");
 		}
 	}else{
-		sprintf(message, "400\nOn ne peut pas quiter l'accueil\n");
+		sprintf(message, "400\nOn ne peut pas quitter l'accueil\n");
 	}
 }
 
 /**
  * @name prive
- * @brief Fonction permettant de demander une conversation privé avec un autre client
+ * @brief Fonction permettant de demander une conversation privée avec un autre client
  * @param message
  * @param param
  * @param client
@@ -344,7 +344,7 @@ void prive(char *message,char *param, struct Client *client, struct Salon *salon
 				envoyer_reponse(c->socket, message);
 				sprintf(message, "201\nDemande de conversation privée avec %s bien envoyée\n", c->nom);//On envoie une confirmation de la demande de conversation privée
 			}else{
-				sprintf(message, "400\nVous ne pouvez pas lancer de conversation privée seul\n");
+				sprintf(message, "400\nVous ne pouvez pas lancer de conversation privée tout seul\n");
 			}
 		}else{//Sinon on retourne une erreur
 			sprintf(message, "400\nCet utilisateur n'existe pas\n");

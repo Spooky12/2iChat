@@ -56,7 +56,7 @@ void diffusion(struct Salon *salon, char* message){
 
 /**
  * @name traiter_req0
- * @brief Fonction permettant de traiter une requete de fermeture
+ * @brief Fonction permettant de traiter une requête de fermeture
  * @param soc
  */
 void traiter_req0(int soc){
@@ -67,7 +67,7 @@ void traiter_req0(int soc){
 
 /**
  * @name traiter_req100
- * @brief Fonction permettant de traiter une requete de message
+ * @brief Fonction permettant de traiter une requête de message
  * @param salon
  * @param client
  * @param texte
@@ -81,7 +81,7 @@ void traiter_req100(struct Salon *salon, struct Client *client,char* texte){
 
 /**
  * @name traiter_req101
- * @brief Fonction permettant de traiter une requete de commande
+ * @brief Fonction permettant de traiter une requête de commande
  * @param salon
  * @param client
  * @param texte
@@ -139,7 +139,7 @@ void traiter_req101(struct Salon **salon, struct Client *client,char* texte){
 		prive(message, param, client, (*salon));
 		envoyer_reponse(client->socket, message);
 	}else{
-		printf("Reception d\"une commande inconnue: \"%s\"\n", commande);
+		printf("Réception d\"une commande inconnue: \"%s\"\n", commande);
 		sprintf(message, "401\n");
 		envoyer_reponse(client->socket, message);
 	}
@@ -147,7 +147,7 @@ void traiter_req101(struct Salon **salon, struct Client *client,char* texte){
 
 /**
  * @name traiter_req300
- * @brief Fonction permettant de traiter les messages liés a la messagerie privée
+ * @brief Fonction permettant de traiter les messages liés à la messagerie privée
  * @param salon
  * @param client
  * @param resultat
@@ -178,7 +178,7 @@ void traiter_req300(struct Salon *salon, struct Client *client, int resultat, ch
 
 /**
  * @name envoyer_reponse
- * @brief Fonction permettant de transmettre une requete à un socket
+ * @brief Fonction permettant de transmettre une requête à un socket
  * @param soc
  * @param req
  */
