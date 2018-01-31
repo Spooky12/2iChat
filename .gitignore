@@ -1,5 +1,6 @@
 .idea
 cmake-build-debug
+CMakeLists.txt
 serveur/serveur
 client/client
 client/affichage.o
