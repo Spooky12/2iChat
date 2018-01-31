@@ -77,7 +77,7 @@ void* gestion_envoie(void *soc) {
     }
 
     //fermeture des mp si il y a une discussion en cours
-    if(strcmp(pseudoPm, "") != 0) {
+    if(socPm!=-1) {
         sprintf(req,"%i\n",1);
         envoyer_requete(socPm, req);
     }
@@ -96,9 +96,10 @@ void* gestion_envoie(void *soc) {
  */
 void* gestion_lecture(void *soc) {
     int sock = *(int*) soc;
-    while(1) {
+    while(!quitter) {
         lire_reponse(sock);
     }
+    pthread_exit(0);
 }
 
 /**
@@ -107,7 +108,7 @@ void* gestion_lecture(void *soc) {
  */
 void* gestion_lecturePm() {
     afficherMessageServeur(messWin, "La discussion privé a commencé (\\leave pour quitter)");
-    while(1) {
+    while(socPm!=-1 && !quitter) {
         char rep[BUFF_MAX];
         int repID=-1;
         //On vide le buffer
@@ -155,6 +156,7 @@ void* gestion_lecturePm() {
         }
 
     }
+    pthread_exit(0);
 }
 
 /**

@@ -3,6 +3,10 @@
 Chat2i est un chat multi-client/serveur développé dans le cadre des cours de MCS
 
 #### Compilation
+Si la version de dev de ncurses n'est pas installé :
+```
+sudo apt-get install libncurses-dev
+```
 ##### Compilation du serveur
 ```
 gcc commandes.c -c
